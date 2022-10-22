@@ -15,6 +15,6 @@ void loop() {
   int testdata = 5689;
   if (digitalRead(11) == LOW && millis() - time > 1000) {
     time = millis();
-    Serial.println(String(millis()) + " serialsend-> " + String(testdata));
+    Serial.println("Time("+String(int(millis()/1000)) + ")=serialsend->" + String(testdata));
   }
 }
