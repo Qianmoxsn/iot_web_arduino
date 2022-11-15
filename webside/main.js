@@ -1,84 +1,44 @@
-// import './style.css'
-// import javascriptLogo from './javascript.svg'
-// import {setupCounter} from './counter.js'
-//
-//
-// document.querySelector('#app').innerHTML = `
-//   <div>
-//     <a href="https://vitejs.dev" target="_blank">
-//       <img src="/vite.svg" class="logo" alt="Vite logo" />
-//     </a>
-//     <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-//       <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-//     </a>
-//     <h1>Hello Vite!</h1>
-//     <div class="card">
-//       <button id="counter" type="button"></button>
-//     </div>
-//     <p class="read-the-docs">
-//       Click on the Vite logo to learn more
-//     </p>
-//     <div class="testarea">
-//         <h2>udp test area</h2>
-//     </div>
-//   </div>
-// `
-// setupCounter(document.querySelector('#counter'))
+import {createRequire} from 'module';
 
-//socket.io
-//https://blog.csdn.net/niulinbiao/article/details/122329293
+const require = createRequire(import.meta.url);
 
-// import {createServer} from "http";
-// import {Server} from "socket.io"
-// const httpServer = createServer();
-// const websocserver = new Server(httpServer);
-// websocserver.on("connection", (socket) => {
-//     // 自定义接收消息事件
-//     socket.on('sendMsg',(data) => {
-//         console.log(data)
-//         //   定义发送消息事件
-//         // io表示广播出去，发送给全部的连接
-//         websocserver.emit('pushMsg',"服务端返回的消息："+data)
-//     })
-// });
+//http server
+//https://zhuanlan.zhihu.com/p/262907776
 
+import http from "http";
 
-//udp--
-//https://www.yisu.com/zixun/151340.html
+const port = 5678;
 
-import dgram from 'dgram';
-const server = dgram.createSocket("udp4");
-//绑定端口
-server.bind("5678");
-//监听端口
-server.on("listening", () => {
-    console.log("lisining on::")
-    console.log("address:" + server.address().address);
-    console.log("port:" + server.address().port);
+const server = http.createServer((req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('你好世界\n');
+})
+
+server.listen(port, () => {
+    console.log("HTTP sever port:" + port);
 });
 
-// server.on("message", (msg, rinfo) => {
-//     console.log("rinfo.address =  " + rinfo.address);
-//     console.log("rinfo.port =  " + rinfo.port);
-//     console.log(msg.toString());
-// });
+//serial read
+//https://cloud.tencent.com/developer/article/1875599
+var SerialPort = require("serialport").SerialPort;
+var serialPort = new SerialPort(
+    {
+        path: 'COM3',
+        baudRate: 9600, //波特率
+        dataBits: 8, //数据位
+        parity: 'none', //奇偶校验
+        stopBits: 1, //停止位
+        flowControl: false
+    }, function (err) {
+        if (err) {
+            return console.log('Error: ', err.message)
+        }
+    })
 
-//chrome.sockets.udp
-//http://chrome.noonme.com/apps/sockets_udp.html
-// let adress = "127.0.0.1";
-// let port = 5173
-//
-//
-//
-// let socket = 0;
-//
-// chrome.sockets.udp.create({}, function (socketInfo) //Create socket entry
-// {
-//     socket = socketInfo.socketId;
-//     chrome.sockets.udp.bind(23, adress, port, function (back){})
-//
-// })
+serialPort.on('data', function (data) {
+    console.log('serial received: ', data);//data就是你要读取的数据
 
-
+})
 
 

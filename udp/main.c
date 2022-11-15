@@ -39,7 +39,7 @@ int main(void) {
     DWORD wWLen = 0;
     char buf[1024] = {0};
 
-    //这段不加socket创建必失败 别问↓
+    //这段不加 socket创建必失败 别问↓
     WORD wVersionRequested;
     WSADATA wsaData;
     // Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h
@@ -49,7 +49,7 @@ int main(void) {
         printf("WSAStartup failed with error: %d\n", err);
         return 1;
     }
-    //这段不加socket创建必失败 别问↑
+    //这段不加 socket创建必失败 别问↑
 
     HANDLE HCOM = open_serial_port("COM3", 9600);
     if (HCOM == INVALID_HANDLE_VALUE) {
@@ -139,7 +139,12 @@ int send_udp_str(char *ip, int port, char *str) {
     server.sin_addr.s_addr = inet_addr(ip);
 
     //将套接字和IP、端口绑定
-    bind(sockfd, (struct sockaddr *) &server, sizeof(server));
+    if (bind(sockfd, (struct sockaddr *) &server, sizeof(server)) < 0) {
+        printf("bind error\n");
+        perror("bindERR");
+        ret = -1;
+        return ret;
+    }
 
     //socket文件描述符返回值为-1，socket创建失败
     if (sockfd < 0) {
