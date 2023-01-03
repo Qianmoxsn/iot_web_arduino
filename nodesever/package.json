@@ -2,7 +2,7 @@
   "name": "webside",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "node": "^19.0.1",
+    "requirejs": "^2.3.6",
     "serialport": "^10.4.0",
     "socket.io": "^4.5.3"
   }
