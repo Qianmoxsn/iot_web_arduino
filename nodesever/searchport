@@ -1,3 +1,0 @@
-const SerialPort = require("serialport").SerialPort;
-
-SerialPort.list().then(ports => console.log(ports))
