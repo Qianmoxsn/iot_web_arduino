@@ -21,6 +21,7 @@ function setupserial(portname) {
                 return console.log('Error: ', err.message)
             } else {
                 console.log("serial open at " + portname);
+                console.log("--------------------------");
             }
         });
 
@@ -35,10 +36,10 @@ function readserial(table) {
 
         if (order === table["AC ON"]) {
             console.log("operation: AC ON");
-            WS.sendmsg("sending order: AC ON");
+            WS.sendmsg("order from sever: AC ON");
         } else if (order === table["AC OFF"]) {
             console.log("operation: AC OFF");
-            WS.sendmsg("sending order: AC OFF");
+            WS.sendmsg("order from sever: AC OFF");
         }
     })
 }

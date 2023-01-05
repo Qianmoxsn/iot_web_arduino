@@ -3,7 +3,7 @@
 const WebSocket = require('ws');//引入模块
 let wss = null;
 
-function setsever() {
+function setsever(table) {
     const portname = 8080;
     wss = new WebSocket.Server({port: portname}, function (err) {
             if (err) {
@@ -20,7 +20,13 @@ function setsever() {
 
         ws.on('message', function incoming(message) {
             console.log('received: %s', message);
-
+            if (message.toString() === table["AC ON"]) {
+                console.log("operation: AC ON");
+                sendmsg("order from broswer: AC ON");
+            } else if (message.toString() === table["AC OFF"]) {
+                console.log("operation: AC OFF");
+                sendmsg("order from broswer: AC OFF");
+            }
         });//当收到消息时，在控制台打印出来，并回复一条信息
 
 

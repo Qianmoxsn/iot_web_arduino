@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 
+
 const ws = new WebSocket('ws://localhost:8080');
 
 ws.on('open', function open() {
@@ -9,3 +10,4 @@ ws.on('open', function open() {
 ws.on('message', function incoming(data) {
   console.log(data.toString('utf8'));
 });//当收到消息时，在控制台打印出来
+
