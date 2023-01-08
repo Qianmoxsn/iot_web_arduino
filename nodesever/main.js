@@ -11,6 +11,7 @@ let WS = require('./WebsocketOperation.js');
 Serialop.setupserial("COM4");
 
 WS.setsever(key2operation);
+
 Serialop.readserial(key2operation);
 
 

@@ -1,6 +1,7 @@
 //ws sever set
 //https://blog.csdn.net/LiMubai_CN/article/details/81844156
 const WebSocket = require('ws');//引入模块
+let Serialop = require('./SerialOperation.js');
 let wss = null;
 
 function setsever(table) {
@@ -19,13 +20,15 @@ function setsever(table) {
     wss.on('connection', function connection(ws) {
 
         ws.on('message', function incoming(message) {
-            console.log('received: %s', message);
+            // console.log('received: %s', message);
             if (message.toString() === table["AC ON"]) {
-                console.log("operation: AC ON");
-                sendmsg("order from broswer: AC ON");
+                console.log("[W]op: AC ON");
+                sendmsg("[W]op: AC ON");
+                Serialop.writeserial(table["AC ON"]);
             } else if (message.toString() === table["AC OFF"]) {
-                console.log("operation: AC OFF");
-                sendmsg("order from broswer: AC OFF");
+                console.log("[W]op: AC OFF");
+                sendmsg("[W]op: AC OFF");
+                Serialop.writeserial(table["AC OFF"]);
             }
         });//当收到消息时，在控制台打印出来，并回复一条信息
 

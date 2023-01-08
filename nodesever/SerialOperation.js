@@ -33,22 +33,28 @@ function readserial(table) {
         let order = data.toString('utf8');
 
         order = order.replace("\r\n", "");
-
-        if (order === table["AC ON"]) {
-            console.log("operation: AC ON");
-            WS.sendmsg("order from sever: AC ON");
-        } else if (order === table["AC OFF"]) {
-            console.log("operation: AC OFF");
-            WS.sendmsg("order from sever: AC OFF");
+        if (order.slice(1, 2) === "T") {
+            console.log("T: " + order.slice(3, 7) + " H: " + order.slice(8, 10));
+            //WS.sendmsg("[T]: " + order.slice(3, 7) + order.slice(8, 10));
+        }
+        else if (order.slice(1, 2) === "L") {
+            order = order.slice(3, 7);
+            if (order === table["AC ON"]) {
+                console.log("[L]op: AC ON");
+                WS.sendmsg("[L]op: AC ON");
+            } else if (order === table["AC OFF"]) {
+                console.log("[L]op: AC OFF");
+                WS.sendmsg("[L]op: AC OFF");
+            }
         }
     })
 }
 
 
 function writeserial(data) {
-    serialPort.write(data, function (err, results) {
-        console.log('serial send:', '>>', data.toString('utf8'));
-    });
+    serialPort.write(data, (err) => {
+        if (err) return console.log('write Error: ', err.message);
+    })
 }
 
 // Path: SerialOperation.js
