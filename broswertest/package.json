@@ -14,8 +14,6 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
-    "@orillusion/core": "^0.3.4-patch.7",
     "ws": "^8.11.0"
-
   }
 }

@@ -8,11 +8,11 @@ let key2operation = {
 let Serialop = require('./SerialOperation.js');
 let WS = require('./WebsocketOperation.js');
 
-//Serialop.setupserial("COM4");
+Serialop.setupserial("COM4");
 
 WS.setsever(key2operation);
 
-//Serialop.readserial(key2operation);
+Serialop.readserial(key2operation);
 
 
 
