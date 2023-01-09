@@ -19,7 +19,7 @@ WS sever set 8080
 serial open at COMx
 --------------------------
 ```
-1. 在`powershell`中打开`broswertest`文件夹，输入vite命令:`npm run dev`,成功后显示
+3. 在`powershell`中打开`broswertest`文件夹，输入vite命令:`npm run dev`,成功后显示
 ```
   VITE v4.0.3  ready in 156 ms
 
