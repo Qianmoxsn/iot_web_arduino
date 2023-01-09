@@ -23,11 +23,11 @@ function setsever(table) {
             // console.log('received: %s', message);
             if (message.toString() === table["AC ON"]) {
                 console.log("[W]op: AC ON");
-                sendmsg("[W]op: AC ON");
+                sendmsg("[W]"+table["AC ON"]);
                 Serialop.writeserial(table["AC ON"]);
             } else if (message.toString() === table["AC OFF"]) {
                 console.log("[W]op: AC OFF");
-                sendmsg("[W]op: AC OFF");
+                sendmsg("[W]"+table["AC OFF"]);
                 Serialop.writeserial(table["AC OFF"]);
             }
         });//当收到消息时，在控制台打印出来，并回复一条信息

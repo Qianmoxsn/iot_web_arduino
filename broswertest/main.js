@@ -1,13 +1,28 @@
-const WebSocket = require('ws');
+let ws = new WebSocket("ws://localhost:8080");
+ws.onopen = function () {
+  ws.send("Here is the client! You are connected!");
+};
+ws.onmessage = function (evt) {
+  console.log(evt.data);
+  if (evt.data.slice(1, 2) === "T") {
+    let temp = evt.data.slice(4, 8);
+    document.getElementById("temp").innerHTML = temp;
+    let hum = evt.data.slice(9, 11);
+    document.getElementById("hum").innerHTML = hum;
+  } else if (evt.data.slice(1, 2) === "L" || evt.data.slice(1, 2) === "W") {
+    if (evt.data.slice(3,7) == "5678") {
+      document.getElementById("btnon").style.backgroundColor = "#a9e089";
+      document.getElementById("btnoff").style.backgroundColor = "#f9f9f9";
+    } else if (evt.data.slice(3,7) == "1234") {
+      document.getElementById("btnoff").style.backgroundColor = "#ff9d42";
+      document.getElementById("btnon").style.backgroundColor = "#f9f9f9";
+    }
+  }
+};
 
-
-const ws = new WebSocket('ws://localhost:8080');
-
-ws.on('open', function open() {
-  ws.send('Here is the client! You are connected!');
-});//在连接创建完成后发送一条信息
-
-ws.on('message', function incoming(data) {
-  console.log(data.toString('utf8'));
-});//当收到消息时，在控制台打印出来
-
+document.getElementById("btnon").onclick = function () {
+  ws.send("5678");
+};
+document.getElementById("btnoff").onclick = function () {
+  ws.send("1234");
+};

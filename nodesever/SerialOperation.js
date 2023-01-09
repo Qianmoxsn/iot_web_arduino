@@ -35,16 +35,16 @@ function readserial(table) {
         order = order.replace("\r\n", "");
         if (order.slice(1, 2) === "T") {
             console.log("T: " + order.slice(3, 7) + " H: " + order.slice(8, 10));
-            //WS.sendmsg("[T]: " + order.slice(3, 7) + order.slice(8, 10));
+            WS.sendmsg("[T]:" + order.slice(3, 7) +" "+ order.slice(8, 10));
         }
         else if (order.slice(1, 2) === "L") {
             order = order.slice(3, 7);
             if (order === table["AC ON"]) {
                 console.log("[L]op: AC ON");
-                WS.sendmsg("[L]op: AC ON");
+                WS.sendmsg("[L]"+table["AC ON"]);
             } else if (order === table["AC OFF"]) {
                 console.log("[L]op: AC OFF");
-                WS.sendmsg("[L]op: AC OFF");
+                WS.sendmsg("[L]"+table["AC OFF"]);
             }
         }
     })
