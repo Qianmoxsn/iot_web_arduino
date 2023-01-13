@@ -1,5 +1,6 @@
 import { Engine3D, Scene3D, PlaneGeometry,
-    GUIHelp,Vector3, Object3D, Camera3D, ForwardRenderJob, HDRLitMaterial, MeshRenderer, BoxColliderShape, Collider, BoxGeometry, ComponentBase, Color, PointerEvent3D, SphereGeometry } from "@orillusion/core";
+    GUIHelp,Vector3, Object3D, Camera3D, 
+    CameraUtil,webGPUContext,FlyCameraController,ForwardRenderJob, HDRLitMaterial, MeshRenderer, BoxColliderShape, Collider, BoxGeometry, ComponentBase, Color, PointerEvent3D, SphereGeometry } from "@orillusion/core";
 
 //websocket
 let ws = new WebSocket("ws://localhost:8080");
@@ -47,21 +48,38 @@ ws.onmessage = function (evt) {
           Engine3D.engineSetting.pickerMode.mode = `bound`;
           await Engine3D.init();
           this.scene = new Scene3D();
-          this.cameraObj = new Object3D();
-          this.camera = this.cameraObj.addComponent(Camera3D)
-          this.scene.addChild(this.cameraObj);
-          this.camera.lookAt(new Vector3(5, 5, 25), new Vector3(-3, 0, -5));
-          this.camera.perspective(60, window.innerWidth / window.innerHeight, 1, 10000.0);
-  
-          let box = this.createBox(-2, 0, 0);
+          // this.cameraObj = new Object3D();
+          // this.camera = this.cameraObj.addComponent(Camera3D)
+          // this.scene.addChild(this.cameraObj);
+          // this.camera.lookAt(new Vector3(5, 5, 25), new Vector3(-3, 0, -5));
+          // this.camera.perspective(60, window.innerWidth / window.innerHeight, 1, 10000.0);
+          //相机控制
+          let camera = CameraUtil.createCamera3DObject(this.scene);
+          camera.perspective(60, webGPUContext.aspect, 1, 5000.0);
+          let ctrl = camera.object3D.addComponent(FlyCameraController);
+          ctrl.setCamera(new Vector3(-90, 90, 180), new Vector3(60, 0, -50));
+          ctrl.moveSpeed = 300;
+
+          let box = this.createBox(0, 50, -80);
           //let sphere = this.createSphere(2, 0, 0);
-            let floor1 = this.createFloor(0, 0, -10, 90, 0, 90,10,20);
-            let floor2 = this.createFloor(-10, 0, 0, 180, 0, 90,10,20);
-            let floor3 = this.createFloor(0, -5, 0, 0, 0, 0,20,20);
+            let floor1 = this.createFloor(100, 50, 0, 0, 0, 90,100,200);
+            let floor2 = this.createFloor(0, 50, -100, 90, 0, 90,100,200);
+            let floor3 = this.createFloor(0, 0, 0, 0, 0, 0,200,200);
             let scene = new Scene3D();
             // 加载 gltf 文件
             let data = await Engine3D.res.loadGltf('壁挂式空调.gltf');
-            data.scaleX = data.scaleY = data.scaleZ = 4;
+            data.scaleX = data.scaleY = data.scaleZ = 40;
+            data.transform.y = 50;
+            data.transform.x=0;
+            data.transform.z = -80;
+
+            let shape: BoxColliderShape = new BoxColliderShape().setFromCenterAndSize(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
+            //加一个碰撞盒子。
+            let collider = data.addComponent(Collider);
+            collider.shape = shape;
+            // 为对象添 MeshRenderer
+            let mr: MeshRenderer = data.addComponent(MeshRenderer);
+
             // 添加至场景
             this.scene.addChild(data);
           let renderJob = new ForwardRenderJob(this.scene);
@@ -77,7 +95,7 @@ ws.onmessage = function (evt) {
         let boxObj = new Object3D();
           boxObj.transform.localPosition = new Vector3(x, y, z);
   
-          let size: number = 2;
+          let size: number = 40;
           let shape: BoxColliderShape = new BoxColliderShape().setFromCenterAndSize(new Vector3(0, 0, 0), new Vector3(size, size, size));
           //加一个碰撞盒子。
           let collider = boxObj.addComponent(Collider);
@@ -129,8 +147,11 @@ ws.onmessage = function (evt) {
   
       onPick(e: PointerEvent3D) {
           console.log('onClick:', e);
-          let mr: MeshRenderer = e.target.getComponent(MeshRenderer);
-          mr.material.baseColor = Color.random();
+          //let mr: MeshRenderer = e.target.getComponent(MeshRenderer);
+          //mr.material.baseColor = Color.random();
+          console.log('haha');
+          //let butoff = document.getElementById("btnoff");
+          //butoff.onclick();
       }
   }
   new TouchDemo().run();
