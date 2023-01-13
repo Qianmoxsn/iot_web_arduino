@@ -3,6 +3,8 @@
 #include <DHT.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
+#include <SoftwareSerial.h>
+
 // lcd defination
 #define COLUMS 16  // LCD columns
 #define ROWS 2     // LCD rows
@@ -24,6 +26,8 @@ LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14,
                       POSITIVE);
 DHT dht(PIN_DHT, DHTTYPE);
 
+SoftwareSerial s_Serial(3, 2);  // RX, TX
+
 void lcdclearline(int line) {
   lcd.setCursor(0, line);
   for (size_t i = 0; i < COLUMS; i++) {
@@ -42,6 +46,7 @@ void setup() {
 
   // serial begin
   Serial.begin(9600);
+  s_Serial.begin(9600);
   // LCD begin
   lcd.begin(COLUMS, ROWS);
   // open lcd backlight

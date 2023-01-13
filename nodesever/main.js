@@ -1,18 +1,28 @@
-let key2operation = {
+var serialparam = {
+    portname: "COM4",//串口号
+    baudRate: 9600, //波特率
+    dataBits: 8, //数据位
+    parity: 'none', //奇偶校验
+    stopBits: 1, //停止位
+    flowControl: false,//流控制
+};
+
+var wsportname = 8080;
+
+var key2operation = {
     "AC ON": "5678",
     "AC OFF": "1234",
-    "5678": "AC ON",
-    "1234": "AC OFF"
 };
 
 let Serialop = require('./SerialOperation.js');
-let WS = require('./WebsocketOperation.js');
+let WSop = require('./WebsocketOperation.js');
+//串口与ws服务器启动
+Serialop.setupserial(serialparam);
+WSop.setupsever(wsportname);
+//监听ws服务器和串口
+WSop.listen(key2operation);
+Serialop.listen(key2operation);
 
-Serialop.setupserial("COM4");
-
-WS.setsever(key2operation);
-
-Serialop.readserial(key2operation);
 
 
 
