@@ -80,7 +80,7 @@ ws.onmessage = function (evt) {
             collider.shape = shape;
             // 为对象添 MeshRenderer
             let mr: MeshRenderer = data.addComponent(MeshRenderer);
-
+            // 更改对象颜色
             // 添加至场景
             this.scene.addChild(data);
 
@@ -116,6 +116,8 @@ ws.onmessage = function (evt) {
           mr.geometry = new BoxGeometry(size, size, size);
           // 设置材质
           mr.material = new HDRLitMaterial();
+          // 更改对象颜色
+          mr.material.baseColor = new Color(1, 1, 1, 1);
           this.scene.addChild(boxObj);
           return boxObj;
       }
@@ -129,6 +131,8 @@ ws.onmessage = function (evt) {
         mr.geometry = new PlaneGeometry(d, e);
         // 设置材质
         mr.material = new HDRLitMaterial();
+        // 更改对象颜色为白色
+        mr.material.baseColor = new Color( 10, 10, 10, 1);
         boxObj.rotationX=a;
         boxObj.rotationY=b;
         boxObj.rotationZ=c;
