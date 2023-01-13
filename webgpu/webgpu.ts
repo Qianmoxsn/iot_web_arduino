@@ -1,7 +1,7 @@
 import { Engine3D, Scene3D, PlaneGeometry,
     GUIHelp,Vector3, Object3D, Camera3D, 
     CameraUtil,webGPUContext,FlyCameraController,ForwardRenderJob, HDRLitMaterial, MeshRenderer, BoxColliderShape, Collider, BoxGeometry, ComponentBase, Color, PointerEvent3D, SphereGeometry } from "@orillusion/core";
-
+let n=0;
 //websocket
 let ws = new WebSocket("ws://localhost:8080");
 ws.onopen = function () {
@@ -27,6 +27,7 @@ ws.onmessage = function (evt) {
   
   document.getElementById("btnon").onclick = function () {
     ws.send("5678");
+    console.log(5678);
   };
   document.getElementById("btnoff").onclick = function () {
     ws.send("1234");
@@ -60,7 +61,7 @@ ws.onmessage = function (evt) {
           ctrl.setCamera(new Vector3(-90, 90, 180), new Vector3(60, 0, -50));
           ctrl.moveSpeed = 300;
 
-          let box = this.createBox(0, 50, -80);
+          //let box = this.createBox(0, 50, -80);
           //let sphere = this.createSphere(2, 0, 0);
             let floor1 = this.createFloor(100, 50, 0, 0, 0, 90,100,200);
             let floor2 = this.createFloor(0, 50, -100, 90, 0, 90,100,200);
@@ -73,7 +74,7 @@ ws.onmessage = function (evt) {
             data.transform.x=0;
             data.transform.z = -80;
 
-            let shape: BoxColliderShape = new BoxColliderShape().setFromCenterAndSize(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
+            let shape: BoxColliderShape = new BoxColliderShape().setFromCenterAndSize(new Vector3(0, 0, 0), new Vector3(2, 1, 1));
             //加一个碰撞盒子。
             let collider = data.addComponent(Collider);
             collider.shape = shape;
@@ -82,10 +83,19 @@ ws.onmessage = function (evt) {
 
             // 添加至场景
             this.scene.addChild(data);
+
+          // let scene2 = new Scene3D();
+          // // 加载 gltf 文件
+          // let data2 = await Engine3D.res.loadGltf('room.glb');
+          // data2.scaleX = data2.scaleY = data2.scaleZ = 1;
+          // // 添加至场景
+          // this.scene.addChild(data2); 
+
           let renderJob = new ForwardRenderJob(this.scene);
           Engine3D.startRender(renderJob);
 
           
+
 
           // 统一监听点击事件
           Engine3D.pickFire.addEventListener(PointerEvent3D.PICK_CLICK, this.onPick, this);
@@ -149,9 +159,20 @@ ws.onmessage = function (evt) {
           console.log('onClick:', e);
           //let mr: MeshRenderer = e.target.getComponent(MeshRenderer);
           //mr.material.baseColor = Color.random();
-          console.log('haha');
+          //ws.send("5678");
+          //console.log('haha');
           //let butoff = document.getElementById("btnoff");
           //butoff.onclick();
+          if(n%2==0){
+              ws.send("5678");
+              console.log('5678');
+              n++;
+          }else{
+              ws.send("1234");
+              console.log('1234');
+              n++;
+          }
+          
       }
   }
   new TouchDemo().run();
