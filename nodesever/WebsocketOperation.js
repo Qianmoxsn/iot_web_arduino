@@ -1,23 +1,26 @@
 //ws sever set
 //https://blog.csdn.net/LiMubai_CN/article/details/81844156
+
 const WebSocket = require('ws');//引入模块
-let Serialop = require('./SerialOperation.js');
-let devlop = require('./main.js');
+const devlop = require('./main.js');
+
 let wss = null;
 
 function setupsever(wsportname) {
     const portname = wsportname;
+    //创建一个WebSocketServer的实例，监听端口8080
     wss = new WebSocket.Server({port: portname}, function (err) {
             if (err) {
                 return console.log('Error: ', err.message)
             } else {
                 console.log("WS sever set " + portname);
+                return wss;
             }
         }
-    );//创建一个WebSocketServer的实例，监听端口8080
+    );
 }
 
-function listen(table) {
+function listen(table, sendserialmsg) {
     wss.on('connection', function connection(ws) {
         ws.on('message', function incoming(message) {
             // console.log('received: %s', message);
@@ -25,13 +28,13 @@ function listen(table) {
                 console.log("[W]op: AC ON");
                 sendwsmsg("[W]" + table["AC ON"]);
                 if (devlop.open_serial) {
-                    Serialop.sendserialmsg(table["AC ON"]);
+                    sendserialmsg(table["AC ON"]);
                 }
             } else if (message.toString() === table["AC OFF"]) {
                 console.log("[W]op: AC OFF");
                 sendwsmsg("[W]" + table["AC OFF"]);
                 if (devlop.open_serial) {
-                    Serialop.sendserialmsg(table["AC OFF"]);
+                    sendserialmsg(table["AC OFF"]);
                 }
             }
         });//当收到消息时，在控制台打印出来，并回复一条信息

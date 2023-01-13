@@ -1,4 +1,4 @@
-////devlop use
+////devlop use-----------------
 const open_serial = true;
 exports.open_serial = open_serial;
 ////devlop use end
@@ -21,16 +21,15 @@ var key2operation = {
 
 let Serialop = require('./SerialOperation.js');
 let WSop = require('./WebsocketOperation.js');
-//串口与ws服务器启动
+//串口启动与串口监听
 if (open_serial) {
     Serialop.setupserial(serialparam);
+    Serialop.listen(key2operation, WSop.sendwsmsg);
 }
+//websocket启动与websocket监听
 WSop.setupsever(wsportname);
-//监听ws服务器和串口
-WSop.listen(key2operation);
-if (open_serial) {
-    Serialop.listen(key2operation);
-}
+WSop.listen(key2operation, Serialop.sendserialmsg);
+
 
 
 

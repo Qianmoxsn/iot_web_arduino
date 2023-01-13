@@ -5,7 +5,6 @@ const SerialPort = require("serialport").SerialPort;
 
 let serialPort = null;
 
-let WS = require('./WebsocketOperation.js');
 
 function setupserial(param) {
     serialPort = new SerialPort(
@@ -28,7 +27,7 @@ function setupserial(param) {
 
 }
 
-function listen(table) {
+function listen(table, sendwsmsg) {
     //open serial
     serialPort.on('data', function (data) {
         let order = data.toString('utf8');
@@ -36,15 +35,15 @@ function listen(table) {
         order = order.replace("\r\n", "");
         if (order.slice(1, 2) === "T") {
             console.log("T: " + order.slice(3, 7) + " H: " + order.slice(8, 10));
-            WS.sendwsmsg("[T]:" + order.slice(3, 7) + " " + order.slice(8, 10));
+            sendwsmsg("[T]:" + order.slice(3, 7) + " " + order.slice(8, 10));
         } else if (order.slice(1, 2) === "L") {
             order = order.slice(3, 7);
             if (order === table["AC ON"]) {
                 console.log("[L]op: AC ON");
-                WS.sendwsmsg("[L]" + table["AC ON"]);
+                sendwsmsg("[L]" + table["AC ON"]);
             } else if (order === table["AC OFF"]) {
                 console.log("[L]op: AC OFF");
-                WS.sendwsmsg("[L]" + table["AC OFF"]);
+                sendwsmsg("[L]" + table["AC OFF"]);
             }
         }
     })
@@ -60,7 +59,7 @@ function sendserialmsg(data) {
 // Path: SerialOperation.js
 module.exports = {
     setupserial,
-    // sendserialmsg,
+    sendserialmsg,
     listen
 }
-exports.sendserialmsg = sendserialmsg;
+
