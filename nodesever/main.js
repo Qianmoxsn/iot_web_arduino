@@ -1,3 +1,8 @@
+////devlop use
+const open_serial = true;
+exports.open_serial = open_serial;
+////devlop use end
+
 var serialparam = {
     portname: "COM4",//串口号
     baudRate: 9600, //波特率
@@ -17,11 +22,15 @@ var key2operation = {
 let Serialop = require('./SerialOperation.js');
 let WSop = require('./WebsocketOperation.js');
 //串口与ws服务器启动
-Serialop.setupserial(serialparam);
+if (open_serial) {
+    Serialop.setupserial(serialparam);
+}
 WSop.setupsever(wsportname);
 //监听ws服务器和串口
 WSop.listen(key2operation);
-Serialop.listen(key2operation);
+if (open_serial) {
+    Serialop.listen(key2operation);
+}
 
 
 
