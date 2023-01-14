@@ -1,6 +1,6 @@
 import { Engine3D, Scene3D, PlaneGeometry,
-    GUIHelp,Vector3, Object3D, Camera3D, 
-    CameraUtil,webGPUContext,FlyCameraController,ForwardRenderJob, HDRLitMaterial, MeshRenderer, BoxColliderShape, Collider, BoxGeometry, ComponentBase, Color, PointerEvent3D, SphereGeometry } from "@orillusion/core";
+    GUIHelp,Vector3, KelvinUtil,Object3D, Camera3D, 
+    CameraUtil,webGPUContext, DirectLight,OutlinePost,outlinePostManager,FlyCameraController,ForwardRenderJob, HDRLitMaterial, MeshRenderer, BoxColliderShape, Collider, BoxGeometry, ComponentBase, Color, PointerEvent3D, SphereGeometry } from "@orillusion/core";
 let n=0;
 //websocket
 let ws = new WebSocket("ws://localhost:8080");
@@ -35,7 +35,7 @@ ws.onmessage = function (evt) {
 
   export default class TouchDemo {
       scene: Scene3D;
-  
+      lightObj: Object3D;
       cameraObj: Object3D;
   
       camera: Camera3D;
@@ -44,10 +44,12 @@ ws.onmessage = function (evt) {
         
       async run() {
           console.log('start demo');
-          
           Engine3D.engineSetting.pickerMode.enable = true;
           Engine3D.engineSetting.pickerMode.mode = `bound`;
           await Engine3D.init();
+          Engine3D.engineSetting.renderSetting.postProcessing.outline.outlinePixel = 0;
+          Engine3D.engineSetting.renderSetting.postProcessing.outline.fadeOutlinePixel = 0;
+          
           this.scene = new Scene3D();
           // this.cameraObj = new Object3D();
           // this.camera = this.cameraObj.addComponent(Camera3D)
@@ -58,9 +60,9 @@ ws.onmessage = function (evt) {
           let camera = CameraUtil.createCamera3DObject(this.scene);
           camera.perspective(60, webGPUContext.aspect, 1, 5000.0);
           let ctrl = camera.object3D.addComponent(FlyCameraController);
-          ctrl.setCamera(new Vector3(-90, 90, 180), new Vector3(60, 0, -50));
+          ctrl.setCamera(new Vector3(-90, 90, 180), new Vector3(60, 0, -10));
           ctrl.moveSpeed = 300;
-
+          await this.initScene(this.scene);
           //let box = this.createBox(0, 50, -80);
           //let sphere = this.createSphere(2, 0, 0);
             let floor1 = this.createFloor(100, 50, 0, 0, 0, 90,100,200);
@@ -72,7 +74,8 @@ ws.onmessage = function (evt) {
             data.scaleX = data.scaleY = data.scaleZ = 40;
             data.transform.y = 50;
             data.transform.x=0;
-            data.transform.z = -80;
+            data.transform.z = -90;
+            outlinePostManager.setOutlineList([[data]], [new Color(1, 0.2, 0, 1)]);
 
             let shape: BoxColliderShape = new BoxColliderShape().setFromCenterAndSize(new Vector3(0, 0, 0), new Vector3(2, 1, 1));
             //加一个碰撞盒子。
@@ -84,21 +87,40 @@ ws.onmessage = function (evt) {
             // 添加至场景
             this.scene.addChild(data);
 
-          // let scene2 = new Scene3D();
-          // // 加载 gltf 文件
-          // let data2 = await Engine3D.res.loadGltf('room.glb');
-          // data2.scaleX = data2.scaleY = data2.scaleZ = 1;
-          // // 添加至场景
-          // this.scene.addChild(data2); 
+           //let scene2 = new Scene3D();
+           // 加载 gltf 文件
+           //let data2 = await Engine3D.res.loadGltf('mesh/dog.gltf');
+           //data2.scaleX = data2.scaleY = data2.scaleZ = 1;
+           // 添加至场景
+           //this.scene.addChild(data2); 
 
           let renderJob = new ForwardRenderJob(this.scene);
+          renderJob.addPost(new OutlinePost());
           Engine3D.startRender(renderJob);
-
-          
-
 
           // 统一监听点击事件
           Engine3D.pickFire.addEventListener(PointerEvent3D.PICK_CLICK, this.onPick, this);
+      }
+
+      async initScene(scene: Scene3D) {
+        /******** light *******/
+        {
+          this.lightObj = new Object3D();
+          this.lightObj.x = 70;
+          this.lightObj.y = 50;
+          this.lightObj.z = -40;
+          this.lightObj.rotationX = 45;
+          this.lightObj.rotationY = -140;
+          this.lightObj.rotationZ = 90;
+          let lc = this.lightObj.addComponent(DirectLight);
+          lc.lightColor = KelvinUtil.color_temperature_to_rgb(5355);
+          lc.castShadow = true;
+          lc.intensity = 5.7;
+          scene.addChild(this.lightObj);
+        }
+        //this.createPlane(scene);
+    
+        return true;
       }
   
       createBox(x: number, y: number, z: number) {
@@ -118,6 +140,7 @@ ws.onmessage = function (evt) {
           mr.material = new HDRLitMaterial();
           // 更改对象颜色
           mr.material.baseColor = new Color(1, 1, 1, 1);
+          outlinePostManager.setOutlineList([[boxObj]], [new Color(1, 0.2, 0, 1)]);
           this.scene.addChild(boxObj);
           return boxObj;
       }
@@ -132,7 +155,7 @@ ws.onmessage = function (evt) {
         // 设置材质
         mr.material = new HDRLitMaterial();
         // 更改对象颜色为白色
-        mr.material.baseColor = new Color( 10, 10, 10, 1);
+        //mr.material.baseColor = new Color( 10, 10, 10, 1);
         boxObj.rotationX=a;
         boxObj.rotationY=b;
         boxObj.rotationZ=c;
@@ -170,10 +193,14 @@ ws.onmessage = function (evt) {
           if(n%2==0){
               ws.send("5678");
               console.log('5678');
+              Engine3D.engineSetting.renderSetting.postProcessing.outline.outlinePixel = 2;
+              Engine3D.engineSetting.renderSetting.postProcessing.outline.fadeOutlinePixel = 4;
               n++;
           }else{
               ws.send("1234");
               console.log('1234');
+              Engine3D.engineSetting.renderSetting.postProcessing.outline.outlinePixel = 0;
+              Engine3D.engineSetting.renderSetting.postProcessing.outline.fadeOutlinePixel = 0;
               n++;
           }
           
