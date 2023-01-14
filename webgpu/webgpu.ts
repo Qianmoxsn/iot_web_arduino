@@ -25,13 +25,13 @@ ws.onmessage = function (evt) {
     }
   };
   
-  document.getElementById("btnon").onclick = function () {
-    ws.send("5678");
-    console.log(5678);
-  };
-  document.getElementById("btnoff").onclick = function () {
-    ws.send("1234");
-  };
+  // document.getElementById("btnon").onclick = function () {
+  //   ws.send("5678");
+  //   console.log(5678);
+  // };
+  // document.getElementById("btnoff").onclick = function () {
+  //   ws.send("1234");
+  // };
 
   export default class TouchDemo {
       scene: Scene3D;
