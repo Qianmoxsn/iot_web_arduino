@@ -68,7 +68,7 @@ ws.onmessage = function (evt) {
             let floor3 = this.createFloor(0, 0, 0, 0, 0, 0,200,200);
             let scene = new Scene3D();
             // 加载 gltf 文件
-            let data = await Engine3D.res.loadGltf('壁挂式空调.gltf');
+            let data = await Engine3D.res.loadGltf('mesh/壁挂式空调.gltf');
             data.scaleX = data.scaleY = data.scaleZ = 40;
             data.transform.y = 50;
             data.transform.x=0;
