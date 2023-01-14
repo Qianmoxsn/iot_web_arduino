@@ -87,12 +87,44 @@ ws.onmessage = function (evt) {
             // 添加至场景
             this.scene.addChild(data);
 
-           //let scene2 = new Scene3D();
+           let scene2 = new Scene3D();
            // 加载 gltf 文件
-           //let data2 = await Engine3D.res.loadGltf('mesh/dog.gltf');
-           //data2.scaleX = data2.scaleY = data2.scaleZ = 1;
+           let data2 = await Engine3D.res.loadGltf('https://cdn.orillusion.com/PBR/DragonAttenuation/DragonAttenuation.gltf');
+           data2.scaleX = data2.scaleY = data2.scaleZ = 20;
+           data2.transform.y = 20;
+            data2.transform.x=60;
+            data2.transform.z = 0;
+            data2.rotationX=0;
+            data2.rotationY=-90;
+            data2.rotationZ=0;
            // 添加至场景
-           //this.scene.addChild(data2); 
+           this.scene.addChild(data2); 
+
+           let scene3 = new Scene3D();
+           // 加载 gltf 文件
+           let data3 = await Engine3D.res.loadGltf('https://cdn.orillusion.com/PBR/SheenChair/SheenChair.gltf');
+           data3.scaleX = data3.scaleY = data3.scaleZ = 40;
+           data3.transform.y = 0;
+            data3.transform.x=0;
+            data3.transform.z = -30;
+            data3.rotationX=0;
+            data3.rotationY=0;
+            data3.rotationZ=0;
+           // 添加至场景
+           this.scene.addChild(data3); 
+
+           let scene4 = new Scene3D();
+           // 加载 gltf 文件
+           let data4 = await Engine3D.res.loadGltf('https://cdn.orillusion.com/PBR/Duck/Duck.gltf');
+           data4.scaleX = data4.scaleY = data4.scaleZ = 0.1;
+           data4.transform.y = 12;
+            data4.transform.x=0;
+            data4.transform.z = -30;
+            data4.rotationX=0;
+            data4.rotationY=-90;
+            data4.rotationZ=0;
+           // 添加至场景
+           this.scene.addChild(data4); 
 
           let renderJob = new ForwardRenderJob(this.scene);
           renderJob.addPost(new OutlinePost());
