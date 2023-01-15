@@ -24,6 +24,13 @@ function listen(table, sendserialmsg) {
     wss.on('connection', function connection(ws) {
         ws.on('message', function incoming(message) {
             // console.log('received: %s', message);
+
+            //webdebugger消息转发
+            if(message.toString().slice(0,3) === "[D]"){
+                sendwsmsg(message.toString().replace("[D]",""));
+            }
+            //webdebugger消息转发:end
+
             if (message.toString() === table["AC ON"]) {
                 console.log("[W]op: AC ON");
                 sendwsmsg("[W]" + table["AC ON"]);

@@ -1,0 +1,15 @@
+{
+  "name": "vite-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "vite --port 2333",
+    "build": "vite build",
+    "preview": "vite preview",
+    "main": "node main.js"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0"
+  }
+}

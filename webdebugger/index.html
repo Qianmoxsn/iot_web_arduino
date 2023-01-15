@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.5" />
+    <title>web_debugger</title>
+  </head>
+  <body>
+    <div id="title">
+      <h1>web_debugger</h1>
+      <div id="line">
+        <h3 style="width: 20%;text-align: center;">State:</h3>
+        <h3 id="text" style="width: 80%;text-align: center;">NotConnected</h3>
+      </div>
+      <div id="line">
+        <h3 style="width: 20%;text-align: center;">Message:</h3>
+        <h3 id="mtext" style="width: 80%;text-align: center;">--</h3>
+      </div>
+    </div>
+    <div id="line">
+      <div id="app">
+        <div>
+          <p>send order to browser</p>
+          <button id="btn_on">ACON</button>
+        </div>
+      </div>
+      <div id="app">
+        <div>
+          <p>send order to browser</p>
+          <button id="btn_off">ACOFF</button>
+        </div>
+      </div>
+      <div id="app_col">
+          <p>set temperature[format:xx.x]</p>
+          <input type="text" value="11.4" id="tem" />
+        
+          <p>set humidity[format:xx]</p>
+          <input type="text" value="11" id="hum" />
+          <button id="btn_send" style="margin: 15px 40px;">SEND</button>
+      </div>
+    </div>
+    <div id="readme">
+      <h3>使用说明：</h3>
+      <p>本测试器作用是替代原系统中<code>nodesever</code>接收串口信息后向<code>broswer</code>发送websocket信息</p>
+      <p>运行<code>nodesever/main.js</code>后刷新本页面，连接状态应为<code>Connected</code></p>
+      <p>运行<code>webgpu/click to run.bat</code>或<code>broswertest/click to run.bat</code>进行调试</p>
+      <p>温湿度信息首次同步需点击<code>SEND</code>按钮，之后修改文本框中值可自动发送（数据必须为样例格式）</p>
+    </div>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
