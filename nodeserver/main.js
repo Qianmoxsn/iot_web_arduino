@@ -1,5 +1,5 @@
 ////devlop use-----------------
-const open_serial = true;
+const open_serial = false;
 exports.open_serial = open_serial;
 ////devlop use end
 
@@ -27,7 +27,7 @@ if (open_serial) {
     Serialop.listen(key2operation, WSop.sendwsmsg);
 }
 //websocket启动与websocket监听
-WSop.setupsever(wsportname);
+WSop.setupserver(wsportname);
 WSop.listen(key2operation, Serialop.sendserialmsg);
 
 

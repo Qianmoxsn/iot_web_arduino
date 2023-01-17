@@ -57,6 +57,8 @@ iot/.vscode/c_cpp_properties.json
 iot/.vscode/launch.json
 iot/.vscode/ipch
 
+esp32/
+
 # Default ignored files
 /shelf/
 /workspace.xml
