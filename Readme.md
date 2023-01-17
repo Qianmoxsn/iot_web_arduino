@@ -2,7 +2,7 @@
 ## 项目文件简介
 本项目分四个板块，  
 `iot`文件夹内为`Arduino`相关代码，作为传感器数据处理。  
-`nodesever`文件夹内为使用`node.js`运行的相关代码，主要是建立本地网络服务器，向浏览器端发送由`arduino`收集的串口数据。  
+`nodeserver`文件夹内为使用`node.js`运行的相关代码，主要是建立本地网络服务器，向浏览器端发送由`arduino`收集的串口数据。  
 `broswertest`文件夹内为暂时代替`webgpu`的测试环境。  
 `webgpu`文件夹内为使用`orillusion`引擎实现的可视化环境。
 ## 运行方法
@@ -24,8 +24,8 @@
 #### 浏览器设置（使用webgpu）
 1. 在`chrome`浏览器中输入`chrome://flags/#enable-unsafe-webgpu`，将`Enable unsafe WebGPU`设置为`Enabled`
 #### 运行程序
-1. 在`nodesever`文件夹内找到`searchport.js`文件，使用nodejs运行，运行后会显示当前计算机连接的串口设备。
-2. 找到`arduino`所连接的串口号，修改`nodesever/main.js`第7行`portname: "COM4",//串口号`参数为正确的串口号。
+1. 在`nodeserver`文件夹内找到`searchport.js`文件，使用nodejs运行，运行后会显示当前计算机连接的串口设备。
+2. 找到`arduino`所连接的串口号，修改`nodeserver/main.js`第7行`portname: "COM4",//串口号`参数为正确的串口号。
 > 6-15行参数可按需修改
 > ```javascript
 > var serialparam = {
@@ -39,9 +39,9 @@
 >
 > var wsportname = 8080;
 > ```
-3. 运行`nodesever/main.js`，运行成功后会显示
+3. 运行`nodeserver/main.js`，运行成功后会显示
 ```
-WS sever set 8080
+WS server set 8080
 serial open at COMx
 --------------------------
 ```

@@ -1,4 +1,4 @@
-//ws sever set
+//ws server set
 //https://blog.csdn.net/LiMubai_CN/article/details/81844156
 
 const WebSocket = require('ws');//引入模块
@@ -6,14 +6,14 @@ const devlop = require('./main.js');
 
 let wss = null;
 
-function setupsever(wsportname) {
+function setupserver(wsportname) {
     const portname = wsportname;
     //创建一个WebSocketServer的实例，监听端口8080
     wss = new WebSocket.Server({port: portname}, function (err) {
             if (err) {
                 return console.log('Error: ', err.message)
             } else {
-                console.log("WS sever set " + portname);
+                console.log("WS server set " + portname);
                 return wss;
             }
         }
@@ -58,7 +58,7 @@ function sendwsmsg(msg) {
 
 // Path: WebsocketOperation.js
 module.exports = {
-    setupsever,
+    setupserver,
     sendwsmsg,
     listen
 }
