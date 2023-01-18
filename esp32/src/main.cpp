@@ -9,12 +9,18 @@
 
 int ontime = millis();
 int offtime = millis();
+int testtime = millis();
+int onstate = 0;
+int offstate = 0;
 
 const char* STA_ssid = "HONOR-5102";
 const char* STA_password = "qwd13591990755";
 
 const char* AP_ssid = "ESP32-AP";
 const char* AP_password = "233233666";
+
+// nodeserver ip
+const char* host = "192.168.3.112";
 
 void wifi_init_sta() {
   WiFi.mode(WIFI_STA);
@@ -52,48 +58,66 @@ void wifi_init_apsta() {
 
 void touchswitch() {
   int line = 55;
-  if (touchRead(TOUCH_PIN_ON) < line) {
-    Serial.println("on");
+  if (touchRead(TOUCH_PIN_ON) < line && onstate == 0 &&
+      millis() - ontime > 100) {
+    // Serial.println("on");
+    onstate = 1;
     digitalWrite(GPIO_NUM_32, LOW);
     digitalWrite(GPIO_NUM_25, LOW);
+    Serial2.println("5678");
     ontime = millis();
-  }
-  if (touchRead(TOUCH_PIN_OFF) < line) {
-    Serial.println("off");
+  } else if (touchRead(TOUCH_PIN_OFF) < line && offstate == 0 &&
+             millis() - offtime > 100) {
+    // Serial.println("off");
+    offstate = 1;
     digitalWrite(GPIO_NUM_33, LOW);
     digitalWrite(GPIO_NUM_25, LOW);
+    Serial2.println("1234");
   }
-  if (millis() - ontime > 500) {
-    Serial.println("ont");
+  if (millis() - ontime > 500 && onstate == 1) {
     digitalWrite(GPIO_NUM_32, HIGH);
     digitalWrite(GPIO_NUM_25, HIGH);
+    onstate = 0;
     ontime = millis();
   }
-  if (millis() - offtime > 500) {
-    Serial.println("offt");
+  if (millis() - offtime > 500 && offstate == 1) {
     digitalWrite(GPIO_NUM_33, HIGH);
     digitalWrite(GPIO_NUM_25, HIGH);
+    offstate = 0;
     offtime = millis();
   }
 }
 
 void setup() {
-  WiFi.disconnect();
+  // WiFi.disconnect();
+  pinMode(GPIO_NUM_2, OUTPUT);
+  pinMode(GPIO_NUM_33, OUTPUT);
+  pinMode(GPIO_NUM_25, OUTPUT);
+  pinMode(GPIO_NUM_32, OUTPUT);
+  pinMode(GPIO_NUM_26, INPUT);
+  pinMode(GPIO_NUM_27, OUTPUT);
+  digitalWrite(GPIO_NUM_33, HIGH);
+  digitalWrite(GPIO_NUM_25, HIGH);
+  digitalWrite(GPIO_NUM_32, HIGH);
+
   Serial.begin(115200);
-  // wifi_init_sta();
+  Serial2.begin(9600, SERIAL_8N1, 26, 27);
+
+  wifi_init_sta();
+
   // wifi_init_ap();
   // wifi_init_apsta();
   pinMode(TOUCH_PIN_ON, INPUT);
   pinMode(TOUCH_PIN_OFF, INPUT);
-  pinMode(GPIO_NUM_33, OUTPUT);
-  pinMode(GPIO_NUM_25, OUTPUT);
-  pinMode(GPIO_NUM_32, OUTPUT);
-  digitalWrite(GPIO_NUM_33, HIGH);
-  digitalWrite(GPIO_NUM_25, HIGH);
-  digitalWrite(GPIO_NUM_32, HIGH);
 }
 void loop() {
   // put your main code here, to run repeatedly:
+  digitalWrite(GPIO_NUM_2, HIGH);
+
+
+  if (Serial2.available()) {
+    Serial.write(Serial2.read());
+  }
 
   touchswitch();
 }
