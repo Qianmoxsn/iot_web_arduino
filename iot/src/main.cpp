@@ -10,7 +10,7 @@
 #define ROWS 2     // LCD rows
 // pin defination
 #define PIN_DHT 9   // DHT11 data pin
-#define PIN_LED 13  // LED pin
+#define PIN_LED 8  // LED pin
 #define PIN_ACON 11
 #define PIN_ACOFF 12
 // dhttype defination
@@ -43,6 +43,7 @@ void setup() {
   pinMode(PIN_ACOFF, INPUT_PULLUP);
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
+  digitalWrite(8, LOW);
 
   // serial begin
   Serial.begin(9600);
@@ -93,6 +94,7 @@ void loop() {
       Serial.println("[L]" + String(key2operation[0]));
       lcd.setCursor(0, 1);
       lcd.print("[L]AC ON");
+      digitalWrite(PIN_LED, HIGH);
       lcdtime = millis();
       lastdata = 1;
     }
@@ -106,6 +108,7 @@ void loop() {
       Serial.println("[L]" + String(key2operation[1]));
       lcd.setCursor(0, 1);
       lcd.print("[L]AC OFF");
+      digitalWrite(PIN_LED, LOW);
       lcdtime = millis();
       lastdata = 1;
     }
@@ -124,13 +127,16 @@ void loop() {
     }
     if (comdata.length() > 0)  // 如果comdata有数据
     {
+      comdata.replace("\r\n", "");  // 去掉回车符
       lcd.setCursor(0, 1);  // 设置光标位置
       if (comdata == (String)key2operation[0]) {
         lcd.print("[W]AC ON");  // 打印comdata数据
+        digitalWrite(PIN_LED, HIGH);
       } else if (comdata == (String)key2operation[1]) {
         lcd.print("[W]AC OFF");  // 打印comdata数据
+        digitalWrite(PIN_LED, LOW);
       } else {
-        lcd.print("[W]Undef CODE");  // 打印comdata数据
+        lcd.print("[err]"+comdata);  // 打印comdata数据
       }
       lcdtime = millis();
     }
