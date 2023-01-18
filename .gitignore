@@ -63,6 +63,7 @@ esp32/.vscode/c_cpp_properties.json
 esp32/.vscode/launch.json
 esp32/.vscode/ipch
 
+
 # Default ignored files
 /shelf/
 /workspace.xml
