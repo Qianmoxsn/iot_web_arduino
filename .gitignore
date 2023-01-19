@@ -123,3 +123,4 @@ dist-ssr
 
 udp/cmake-build-debug
 *.code-workspace
+esp32/.vscode/extensions.json
