@@ -23,7 +23,7 @@ function setupserver(wsportname) {
 function listen(table, sendserialmsg) {
     wss.on('connection', function connection(ws) {
         ws.on('message', function incoming(message) {
-            // console.log('received: %s', message);
+            console.log('received: %s', message);
 
             //webdebugger消息转发
             if(message.toString().slice(0,3) === "[D]"){

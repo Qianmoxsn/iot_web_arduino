@@ -129,6 +129,9 @@ void loop() {
     {
       comdata.replace("\r\n", "");  // 去掉回车符
       lcd.setCursor(0, 1);  // 设置光标位置
+      comdata.replace("\r", "");
+      comdata.replace("\n", "");
+      comdata.replace("[W]", "");
       if (comdata == (String)key2operation[0]) {
         lcd.print("[W]AC ON");  // 打印comdata数据
         digitalWrite(PIN_LED, HIGH);

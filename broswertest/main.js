@@ -5,9 +5,9 @@ ws.onopen = function () {
 ws.onmessage = function (evt) {
   console.log(evt.data);
   if (evt.data.slice(1, 2) === "T") {
-    let temp = evt.data.slice(4, 8);
+    let temp = evt.data.slice(3, 7);
     document.getElementById("temp").innerHTML = temp;
-    let hum = evt.data.slice(9, 11);
+    let hum = evt.data.slice(8, 10);
     document.getElementById("hum").innerHTML = hum;
   } else if (evt.data.slice(1, 2) === "L" || evt.data.slice(1, 2) === "W") {
     if (evt.data.slice(3,7) == "5678") {
