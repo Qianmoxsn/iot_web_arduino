@@ -1,6 +1,8 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
 #include <WiFi.h>
+
 
 // FS.h is included in SPIFFS.h
 // #include <SPIFFS.h>
