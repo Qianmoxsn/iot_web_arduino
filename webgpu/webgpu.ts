@@ -28,8 +28,8 @@ let n = 0;
 
 import ipconfig from "../ipconfig.json" assert { type: "json" };
 
-var ws_sever_ip_forbroswer = ipconfig.ws_sever_ip_forbroswer;
-let ws = new WebSocket("ws://" + ws_sever_ip_forbroswer + ":8080");
+var ws_server_ip_forbroswer = ipconfig.ws_server_ip_forbroswer;
+let ws = new WebSocket("ws://" + ws_server_ip_forbroswer + ":8080");
 
 ws.onopen = function () {
   ws.send("[C]You are connected with broswer");
