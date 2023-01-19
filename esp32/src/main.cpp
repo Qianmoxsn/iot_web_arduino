@@ -37,48 +37,12 @@ void wifi_init_sta() {
     Serial.print(".");
   }
   Serial.println("");
-  Serial.print("Connected to the WiFi network with IP Address: ");
+  Serial.print("Connected to WiFi with IP: ");
   Serial.println(WiFi.localIP());
 }
 
-void touchswitch() {
-  int line = 55;
-  if (touchRead(TOUCH_PIN_ON) < line && onstate == 0 &&
-      millis() - ontime > 100) {
-    // Serial.println("on");
-    onstate = 1;
-    digitalWrite(GPIO_NUM_32, LOW);
-    digitalWrite(GPIO_NUM_25, LOW);
-    // Serial2.println("5678");
-    client.send("[D][L]5678");
-    Serial.println("send: [L]5678");
-    ontime = millis();
-  } else if (touchRead(TOUCH_PIN_OFF) < line && offstate == 0 &&
-             millis() - offtime > 100) {
-    // Serial.println("off");
-    offstate = 1;
-    digitalWrite(GPIO_NUM_33, LOW);
-    digitalWrite(GPIO_NUM_25, LOW);
-    // Serial2.println("1234");
-    client.send("[D][L]1234");
-    Serial.println("send: [L]1234");
-  }
-  if (millis() - ontime > 500 && onstate == 1) {
-    digitalWrite(GPIO_NUM_32, HIGH);
-    digitalWrite(GPIO_NUM_25, HIGH);
-    onstate = 0;
-    ontime = millis();
-  }
-  if (millis() - offtime > 500 && offstate == 1) {
-    digitalWrite(GPIO_NUM_33, HIGH);
-    digitalWrite(GPIO_NUM_25, HIGH);
-    offstate = 0;
-    offtime = millis();
-  }
-}
 
 void setup() {
-  // WiFi.disconnect();
   pinMode(GPIO_NUM_2, OUTPUT);
   pinMode(GPIO_NUM_33, OUTPUT);
   pinMode(GPIO_NUM_25, OUTPUT);
@@ -94,8 +58,6 @@ void setup() {
 
   wifi_init_sta();
 
-  // wifi_init_ap();
-  // wifi_init_apsta();
   pinMode(TOUCH_PIN_ON, INPUT);
   pinMode(TOUCH_PIN_OFF, INPUT);
 
@@ -104,7 +66,7 @@ void setup() {
       client.connect(websockets_server_host, websockets_server_port, "/");
   if (connected) {
     Serial.println("Connected to Server");
-    client.send("Hello Server");
+    client.send("[C]You are connected with ESP32");
   } else {
     Serial.println("Not Connected!");
   }
@@ -114,7 +76,6 @@ void setup() {
     Serial.print("Got Message: ");
     String msg = message.data();
     if (msg[1] == 'W') {
-      Serial.println("!!!");
       Serial2.println(msg);
     }
 

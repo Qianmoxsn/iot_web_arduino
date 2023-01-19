@@ -23,13 +23,25 @@ function setupserver(wsportname) {
 function listen(table, sendserialmsg) {
     wss.on('connection', function connection(ws) {
         ws.on('message', function incoming(message) {
-            console.log('received: %s', message);
+            // console.log('received: %s', message);
 
-            //webdebugger消息转发
-            if(message.toString().slice(0,3) === "[D]"){
-                sendwsmsg(message.toString().replace("[D]",""));
+            //esp/webdebugger消息转发
+            if (message.toString().slice(0, 3) === "[D]") {
+                let msg = message.toString().replace("[D]", "")
+                sendwsmsg(msg);
+                if (msg.slice(0, 3) === "[L]") {
+                    if (msg.slice(3, 7) === table["AC ON"]) {
+                        console.log("[L]op: AC ON");
+                    } else if (msg.slice(3, 7) === table["AC OFF"]) {
+                        console.log("[L]op: AC OFF");
+                    }
+
+                }
             }
-            //webdebugger消息转发:end
+            //连接信息显示
+            if (message.toString().slice(0, 3) === "[C]") {
+                console.log(message.toString().replace("[C]", ""));
+            }
 
             if (message.toString() === table["AC ON"]) {
                 console.log("[W]op: AC ON");
@@ -44,6 +56,7 @@ function listen(table, sendserialmsg) {
                     sendserialmsg(table["AC OFF"]);
                 }
             }
+
         });//当收到消息时，在控制台打印出来，并回复一条信息
     });
 }

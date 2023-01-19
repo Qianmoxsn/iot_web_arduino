@@ -4,7 +4,7 @@ var ws_sever_ip_forbroswer = ipconfig.ws_sever_ip_forbroswer;
 let ws = new WebSocket("ws://" + ws_sever_ip_forbroswer + ":8080");
 
 ws.onopen = function () {
-  ws.send("You are connected with broswer");
+  ws.send("[C]You are connected with broswer(test)");
 };
 ws.onmessage = function (evt) {
   console.log(evt.data);
