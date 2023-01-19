@@ -43,7 +43,7 @@ void setup() {
   pinMode(PIN_ACOFF, INPUT_PULLUP);
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
-  digitalWrite(8, LOW);
+  digitalWrite(LED_BUILTIN, LOW);
 
   // serial begin
   Serial.begin(9600);
