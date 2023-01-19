@@ -19,7 +19,7 @@ function send_off_order() {
 function send_tem_hum() {
   var tem = document.getElementById("tem").value;
   var hum = document.getElementById("hum").value;
-  var msg = "[T]:" + tem + " " + hum;
+  var msg = "[T]" + tem + "," + hum;
   console.log(msg);
   ws.send("[D]"+msg);
   messagetext.innerHTML = msg;
