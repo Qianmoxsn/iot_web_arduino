@@ -2,7 +2,7 @@ let ws = new WebSocket("ws://localhost:8080");
 var statetext = document.getElementById("text");
 var messagetext = document.getElementById("mtext");
 ws.onopen = function () {
-  ws.send("--this is test program--");
+  ws.send("[C]You are connected with ESP32(test)");
   statetext.innerHTML = "Connected";
 };
 
