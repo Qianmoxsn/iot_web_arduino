@@ -1,6 +1,7 @@
 import ipconfig from "../ipconfig.json" assert { type: "json" };
 
-var ws_server_ip_forbroswer = ipconfig.ws_server_ip_forbroswer;
+// var ws_server_ip_forbroswer = ipconfig.ws_server_ip_forbroswer;
+var ws_server_ip_forbroswer = ipconfig.ws_server_ip_foresp32;
 let ws = new WebSocket("ws://" + ws_server_ip_forbroswer + ":8080");
 
 ws.onopen = function () {

@@ -5,15 +5,33 @@ ws.onopen = function () {
   ws.send("[C]You are connected with ESP32(test)");
   statetext.innerHTML = "Connected";
 };
+ws.onmessage = function (evt) {
+  var received_msg = evt.data;
+  messagetext.innerHTML = received_msg;
+  if (received_msg == "[W]5678") {
+    document.getElementById("AC").style.backgroundColor = "#a9e089";
+    document.getElementById("AC").innerHTML = "ON(WEB)";
+
+    // document.getElementById("btn_off").style.backgroundColor = "#f9f9f9";
+  } else if (received_msg == "[W]1234") {
+    document.getElementById("AC").style.backgroundColor = "#ff9d42";
+    document.getElementById("AC").innerHTML = "OFF(WEB)";
+    // document.getElementById("btn_on").style.backgroundColor = "#f9f9f9";
+  }
+};
 
 function send_on_order() {
   ws.send("[D][L]5678");
   messagetext.innerHTML = "[L]5678";
+  document.getElementById("AC").style.backgroundColor = "#a9e089";
+  document.getElementById("AC").innerHTML = "ON";
 }
 
 function send_off_order() {
   ws.send("[D][L]1234");
   messagetext.innerHTML = "[L]1234";
+  document.getElementById("AC").style.backgroundColor = "#ff9d42";
+  document.getElementById("AC").innerHTML = "OFF";
 }
 
 function send_tem_hum() {
@@ -21,7 +39,7 @@ function send_tem_hum() {
   var hum = document.getElementById("hum").value;
   var msg = "[T]" + tem + "," + hum;
   console.log(msg);
-  ws.send("[D]"+msg);
+  ws.send("[D]" + msg);
   messagetext.innerHTML = msg;
 }
 

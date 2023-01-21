@@ -18,6 +18,10 @@
         <h3 style="width: 20%;text-align: center;">Message:</h3>
         <h3 id="mtext" style="width: 80%;text-align: center;">--</h3>
       </div>
+      <div id="line">
+        <h3 style="width: 20%;text-align: center;">AC:</h3>
+        <h3 id="AC" style="width: 80%;text-align: center;">--</h3>
+      </div>
     </div>
     <div id="line">
       <div id="app">
@@ -43,7 +47,7 @@
     </div>
     <div id="readme">
       <h3>使用说明：</h3>
-      <p>本测试器作用是替代原系统中<code>nodeserver</code>接收串口信息后向<code>broswer</code>发送websocket信息</p>
+      <p>本测试器作用是替代原系统中<code>esp32</code>向<code>broswer</code>发送websocket信息</p>
       <p>运行<code>nodeserver/main.js</code>后刷新本页面，连接状态应为<code>Connected</code></p>
       <p>运行<code>webgpu/click to run.bat</code>或<code>broswertest/click to run.bat</code>进行调试</p>
       <p>温湿度信息首次同步需点击<code>SEND</code>按钮，之后修改文本框中值可自动发送（数据必须为样例格式）</p>
