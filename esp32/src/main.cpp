@@ -2,6 +2,7 @@
 #include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
 #include <DHT.h>
+#include <TFT_eSPI.h>
 #include <WiFi.h>
 
 // pin settings (GPIO)
@@ -9,87 +10,21 @@
 #define ONPIN GPIO_NUM_16
 #define OFFPIN GPIO_NUM_4
 #define STAPIN GPIO_NUM_17
-#define SCLPIN GPIO_NUM_18
-#define SDAPIN GPIO_NUM_19
-
-class dht_op {
- private:
-  //@param
-  DHT dht_raw = DHT(DHTPIN, DHT11);
-  float raw_humidity;
-  float raw_temperature;
-  // HardwareSerial Serial = Serial;
-  int dhttime = 0;
-
-  //@method
-  short dhtread() {
-    raw_humidity = dht_raw.readHumidity();
-    raw_temperature = dht_raw.readTemperature();
-    if (isnan(raw_humidity) || isnan(raw_temperature)) {
-      Serial.println("Failed to read from DHT sensor!");
-      return 0;
-    }
-    send_humidity = raw_humidity + mod_humidity;
-    send_temperature = raw_temperature + mod_temperature;
-    return 1;
-  }
-
- public:
-  //@param
-  float mod_humidity;
-  float mod_temperature;
-  float send_humidity;
-  float send_temperature;
-
-  //@method
-  void setupdht() {
-    dht_raw.begin();
-    delay(1000);
-  }
-
-  void dhtread_to_serial() {
-    if (dhtread()) {
-      Serial.print("H:");
-      Serial.print(send_humidity);
-      Serial.print("  T:");
-      Serial.print(send_temperature);
-      Serial.println();
-    }
-  }
-  void dhtread_to_serial(short interval) {
-    if (millis() - dhttime > interval) {
-      if (dhtread()) {
-        Serial.print("H:");
-        Serial.print(send_humidity);
-        Serial.print("  T:");
-        Serial.print(send_temperature);
-        Serial.println();
-      }
-      dhttime = millis();
-    }
-  }
-  void dhtread_to_websockets(short interval,
-                             websockets::WebsocketsClient client) {
-    if (dhtread()) {
-      client.send("[T]" + String(send_temperature, 1) + "," +
-                  String(send_humidity, 0));
-    }
-  }
-};
 
 // WS client ref: https://blog.csdn.net/qq_43415898/article/details/122113228
 class ws_op {
  private:
   const char* STA_ssid = "HONOR-5102";
   const char* STA_password = "qwd13591990755";
+  unsigned long ws_time = 0;
   // const char* STA_ssid = "HONOR9X";
   // const char* STA_password = "233233666";
 
  public:
   // nodeserver ip
   websockets::WebsocketsClient client;
-  const char* websockets_server_host = "192.168.3.112";  // Enter server adress
-  const uint16_t websockets_server_port = 8080;          // Enter server port
+  const char* websockets_server_host = "192.168.3.19";  // Enter server adress
+  const uint16_t websockets_server_port = 8080;         // Enter server port
   //@test
 
   void BlinkHeartBeatLED(int IO_Pin) {
@@ -136,9 +71,8 @@ class ws_op {
 
   void listen() {
     client.onMessage([](websockets::WebsocketsMessage message) {
-      Serial.print(">>");
       String msg = message.data();
-      // Serial.println(msg);
+      // Serial.println(">>"+msg);
       if (msg[1] == 'W') {
         Serial.println(msg);
         if (msg.substring(3, 7) == "5678") {
@@ -149,6 +83,82 @@ class ws_op {
         }
       }
     });
+  }
+};
+
+class dht_op {
+  ws_op ws;
+
+ private:
+  //@param
+  DHT dht_raw = DHT(DHTPIN, DHT11);
+  float raw_humidity;
+  float raw_temperature;
+  // HardwareSerial Serial = Serial;
+  int dhttime = 0;
+
+  //@method
+  void dhtread_to_serial() {
+    Serial.print("H:");
+    Serial.print(send_humidity);
+    Serial.print("  T:");
+    Serial.print(send_temperature);
+    Serial.println();
+  }
+
+  void dhtread_to_websocket() {
+    String msg =
+        "[D][T]" + String(send_temperature, 1) +","+ String(send_humidity, 0);
+    ws.send_ws_message(msg);
+    Serial.println(msg);
+  }
+
+ public:
+  //@param
+  float mod_humidity;
+  float mod_temperature;
+  float send_humidity;
+  float send_temperature;
+
+  //@method
+  void setupdht() {
+    dht_raw.begin();
+    delay(1000);
+  }
+
+  short dhtread(short interval, short ADD_MOD) {
+    // Serial.println("dhtread:"+String(dhttime) + " " +
+    // String(millis()-dhttime));
+    if (millis() - dhttime < interval) {
+      return 0;
+    } else {
+      raw_humidity = dht_raw.readHumidity();
+      delay(100);
+      raw_temperature = dht_raw.readTemperature();
+      dhttime = millis();
+      if (isnan(raw_humidity) || isnan(raw_temperature)) {
+        Serial.println("Failed to read from DHT sensor!");
+        return 0;
+      }
+      send_humidity = raw_humidity + mod_humidity;
+      send_temperature = raw_temperature + mod_temperature;
+      switch (ADD_MOD) {
+        case 0:
+          break;
+        case 1:
+          dhtread_to_serial();
+          break;
+        case 2:
+          dhtread_to_websocket();
+          break;
+        default:
+
+          Serial.println(String(raw_humidity) + String(send_humidity) +
+                         String(raw_temperature) + String(send_temperature));
+          break;
+      }
+      return 1;
+    }
   }
 };
 
@@ -164,17 +174,18 @@ bool btn_down(short pin) {
 // declare object of class
 dht_op dht;
 ws_op ws;
+TFT_eSPI tft = TFT_eSPI();
 
 void setup() {
   pinMode(GPIO_NUM_2, OUTPUT);
-  pinMode(DHTPIN, INPUT_PULLUP);
+  pinMode(DHTPIN, INPUT);
   pinMode(ONPIN, INPUT_PULLUP);
   pinMode(OFFPIN, INPUT_PULLUP);
-  pinMode(SCLPIN, OUTPUT);
-  pinMode(SDAPIN, OUTPUT);
   pinMode(STAPIN, OUTPUT);
 
   Serial.begin(115200);
+
+  dht.setupdht();
 
   ws.wifi_init_sta();
 
@@ -183,7 +194,8 @@ void setup() {
   // run callback when messages are received
   ws.listen();
 
-  dht.setupdht();
+  tft.init();
+  tft.fillScreen(TFT_GREENYELLOW);
 
   // setupfinish
   digitalWrite(GPIO_NUM_2, HIGH);
@@ -193,12 +205,17 @@ void loop() {
   // put your main code here, to run repeatedly:
   ws.update_ws_connection();
 
-  // dht.dhtread_to_serial(2000);
-  // dht.dhtread_to_websockets(2000, ws.client);
+  dht.dhtread(2000, 0);
+  ////TODO: rewrite this function to class
+  ws.send_ws_message("[D][T]" + String(dht.send_temperature, 1) + "," +
+                     String(dht.send_humidity, 0));
+  // ws.dhtread_to_websockets(4000);
   if (btn_down(ONPIN)) {
     digitalWrite(STAPIN, HIGH);
+    tft.fillScreen(TFT_GREEN);
     ws.send_ws_message("[D][L]5678");
   } else if (btn_down(OFFPIN)) {
+    tft.fillScreen(TFT_RED);
     digitalWrite(STAPIN, LOW);
     ws.send_ws_message("[D][L]1234");
   }
