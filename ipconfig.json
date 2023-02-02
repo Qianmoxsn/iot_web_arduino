@@ -1,5 +1,6 @@
 {
   "esp32_local_ip": "192.168.3.10",
-  "ws_server_ip_forbroswer": "127.0.0.1",
-  "ws_server_ip_foresp32": "192.168.3.112"
+  "ws_server_ip": "192.168.3.19",
+  "ws_server_ip_dev": "192.168.3.112",
+  "ws_server_ip_dev_local": "127.0.0.1"
 }

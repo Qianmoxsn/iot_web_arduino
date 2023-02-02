@@ -1,8 +1,10 @@
 import ipconfig from "../ipconfig.json" assert { type: "json" };
 
-// var ws_server_ip_forbroswer = ipconfig.ws_server_ip_forbroswer;
-var ws_server_ip_forbroswer = ipconfig.ws_server_ip_foresp32;
-let ws = new WebSocket("ws://" + ws_server_ip_forbroswer + ":8080");
+// var ws_server_ip = ipconfig.ws_server_ip_dev_local;
+// var ws_server_ip = ipconfig.ws_server_ip_dev;
+var ws_server_ip = ipconfig.ws_server_ip;
+
+let ws = new WebSocket("ws://" + ws_server_ip + ":8080");
 
 ws.onopen = function () {
   ws.send("[C]You are connected with broswer(test)");
