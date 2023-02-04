@@ -51,11 +51,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-iot/.pio
-iot/.vscode/.browse.c_cpp.db*
-iot/.vscode/c_cpp_properties.json
-iot/.vscode/launch.json
-iot/.vscode/ipch
+old_archives/iot/.pio
+old_archives/iot/.vscode
 
 esp32/.pio
 esp32/.vscode
