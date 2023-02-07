@@ -1,7 +1,19 @@
 ////devlop use-----------------
 const open_serial = false;
+const enable_user_sever = true;
 exports.open_serial = open_serial;
 ////devlop use end
+
+//set up user broswer(same function with broswertest but in build env)
+//web source files(html.css.js) in user_broswer
+if (enable_user_sever) {
+    const express = require('express');
+    const app = express();
+    //port is vite default port 5173
+    const PORT = 5173;
+    app.use(express.static('user_broswer'));
+    app.listen(PORT, () => console.log(`user sever on port: ${PORT}`));
+}
 
 var serialparam = {
     portname: "COM4",//串口号
