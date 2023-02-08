@@ -1,6 +1,6 @@
 #include "dht_op.h"
 
-void dht_op::dhtread_to_serial() {
+void DHT_OP::dhtread_to_serial() {
   Serial.print("H:");
   Serial.print(send_humidity);
   Serial.print("  T:");
@@ -8,21 +8,21 @@ void dht_op::dhtread_to_serial() {
   Serial.println();
 }
 
-////TODO:enable send_ws_message() function
-void dht_op::dhtread_to_websocket() {
+
+String DHT_OP::dhtread_to_string() {
   String msg =
       "[D][T]" + String(send_temperature, 1) + "," + String(send_humidity, 0);
-  //   ws.send_ws_message(msg);
   Serial.println(msg);
+  return msg;
 }
-////END
 
-void dht_op::setupdht() {
+
+void DHT_OP::setupdht() {
   dht_raw.begin();
   delay(1000);
 }
 
-short dht_op::dhtread(short interval, short ADD_MOD) {
+short DHT_OP::dhtread(short interval, short ADD_MOD) {
   // Serial.println("dhtread:"+String(dhttime) + " " +
   // String(millis()-dhttime));
   if (millis() - dhttime < interval) {
@@ -44,9 +44,7 @@ short dht_op::dhtread(short interval, short ADD_MOD) {
       case 1:
         dhtread_to_serial();
         break;
-      case 2:
-        dhtread_to_websocket();
-        break;
+
       default:
 
         Serial.println(String(raw_humidity) + String(send_humidity) +

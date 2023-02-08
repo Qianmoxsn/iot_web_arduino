@@ -5,12 +5,12 @@
 
 #include "ws_op.h"
 
-class dht_op {
+class DHT_OP {
  public:
   ////TODO:use variable to replace dht_pin"15" and dht_type "DHT11"
   DHT dht_raw = DHT(15, DHT11);
   ////END
-
+  
   ////TODO:change some variable to private
   //@param
   float mod_humidity;
@@ -26,7 +26,7 @@ class dht_op {
   //@method
   void dhtread_to_serial();
 
-  void dhtread_to_websocket();
+  String dhtread_to_string();
 
   void setupdht();
 

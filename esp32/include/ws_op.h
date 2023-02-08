@@ -4,9 +4,11 @@
 #include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
 #include <WiFi.h>
+#include "basic.h"
+#include "display.h"
 
 // WS client ref: https://blog.csdn.net/qq_43415898/article/details/122113228
-class ws_op {
+class WS_OP {
  private:
   String STA_ssid;
   String STA_password;
@@ -18,7 +20,7 @@ class ws_op {
   // nodeserver ip
   websockets::WebsocketsClient client;
   //@method
-  ws_op(String, String, String, short);
+  WS_OP(String, String, String, short);
 
   void BlinkHeartBeatLED(int);
 
