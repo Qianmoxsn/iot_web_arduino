@@ -6,6 +6,7 @@ void BASIC::setupPins() {
   pinMode(ONPIN, INPUT_PULLUP);
   pinMode(OFFPIN, INPUT_PULLUP);
   pinMode(STAPIN, OUTPUT);
+  pinMode(DOWNLOADPIN, INPUT_PULLUP);
 }
 
 t_mark BASIC::setInterval(int interval, t_mark timemark, void func()) {
@@ -23,4 +24,11 @@ bool BASIC::checkInterval(int interval, t_mark timemark, t_mark *ptr_timemark) {
     return true;
   }
   return false;
+}
+bool BASIC::download_check() {
+  if (digitalRead(DOWNLOADPIN) == LOW) {
+    return true;
+  } else {
+    return false;
+  }
 }

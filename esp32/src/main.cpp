@@ -1,9 +1,18 @@
-#include <TFT_eSPI.h>
+#include <web_update.h>
 
 #include "basic.h"
 #include "dht_op.h"
 #include "display.h"
 #include "ws_op.h"
+
+////TEST:OTA test area
+// may be not stable
+String HOST = "192.168.3.112:5173";
+String Dir = "/firmware.bin";
+
+web_update webUpdate(HOST, Dir, 2, 0);
+
+// END of OTA test area
 
 // TODO:consider rewrite this in basic.h
 extern unsigned long btntime = 0;
@@ -32,13 +41,24 @@ void setup() {
 
   ws.wifi_init_sta();
 
+  ////TEST:OTA test area
+  if (BASIC::download_check()) {
+    Serial.println("download mode");
+    DISP::pagePrint("download mode");
+    webUpdate.update_wifi();
+  } else {
+    Serial.println("normal mode");
+    DISP::pagePrint("nomral mode");
+  }
+  // END of OTA test area
+
   ws.connect_ws_server(1500);
 
   // run callback when messages are received
   ws.listen();
 
   // setupfinish
-  digitalWrite(GPIO_NUM_2, HIGH);
+  digitalWrite(GPIO_NUM_2, LOW);
   delay(1000);
 
   DISP::pageReady();

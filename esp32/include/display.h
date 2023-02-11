@@ -11,4 +11,5 @@ class DISP {
   static void pageOn();
   static void pageOff();
   static void pageReady();
+  static void pagePrint(String str, int size = 4,int color = TFT_WHITE, int bg = TFT_BLACK);
 };

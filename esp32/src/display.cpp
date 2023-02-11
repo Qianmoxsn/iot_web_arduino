@@ -36,4 +36,11 @@ void DISP::pageReady() {
   tft_raw.setTextColor(TFT_WHITE, TFT_BLACK);
   tft_raw.println("______READY______");
 }
+void DISP::pagePrint(String str, int size, int color, int bg) {
+  tft_raw.setCursor(10, tft_raw.height() / 2 - 13, 4);
+  tft_raw.fillScreen(bg);
+  tft_raw.setTextColor(color, bg);
+  tft_raw.println(str);
+}
+
 // TODO:consider lifetime of a page(maybe use checkinterval in basic.h)

@@ -10,12 +10,14 @@ typedef unsigned long t_mark;
 #define OFFPIN GPIO_NUM_4
 #define STAPIN GPIO_NUM_17
 #define LEDPIN GPIO_NUM_2
+#define DOWNLOADPIN GPIO_NUM_22
 
 class BASIC {
  public:
   //@param
   //@method
   static void setupPins();
+  static bool download_check();
   static t_mark setInterval(int interval, t_mark timemark, void func());
   static bool checkInterval(int interval, t_mark timemark, t_mark *newtimemark);
 };
