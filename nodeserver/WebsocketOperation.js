@@ -5,6 +5,8 @@ const WebSocket = require('ws');//引入模块
 const devlop = require('./main.js');
 
 let wss = null;
+let status = "None";
+
 
 function setupserver(wsportname) {
     const portname = wsportname;
@@ -32,12 +34,19 @@ function listen(table, sendserialmsg) {
                 if (msg.slice(0, 3) === "[L]") {
                     if (msg.slice(3, 7) === table["AC ON"]) {
                         console.log("[L]op: AC ON");
+                        status = "[L]" + table["AC ON"]
                     } else if (msg.slice(3, 7) === table["AC OFF"]) {
                         console.log("[L]op: AC OFF");
+                        status = "[L]" + table["AC OFF"]
                     }
 
                 }
             }
+            if(message.toString() === "[C]You are connected with broswer(test)"){
+                sendwsmsg(status);
+                console.log("Refresh Status:" + status);
+            }
+
             //连接信息显示
             if (message.toString().slice(0, 3) === "[C]") {
                 console.log(message.toString().replace("[C]", ""));
@@ -45,12 +54,14 @@ function listen(table, sendserialmsg) {
 
             if (message.toString() === table["AC ON"]) {
                 console.log("[W]op: AC ON");
+                status = "[W]" + table["AC ON"]
                 sendwsmsg("[W]" + table["AC ON"]);
                 if (devlop.open_serial) {
                     sendserialmsg(table["AC ON"]);
                 }
             } else if (message.toString() === table["AC OFF"]) {
                 console.log("[W]op: AC OFF");
+                status = "[W]" + table["AC OFF"]
                 sendwsmsg("[W]" + table["AC OFF"]);
                 if (devlop.open_serial) {
                     sendserialmsg(table["AC OFF"]);
