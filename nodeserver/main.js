@@ -8,10 +8,26 @@ exports.open_serial = open_serial;
 //web source files(html.css.js) in user_broswer
 if (enable_user_sever) {
     const express = require('express');
+    const multer = require('multer');
     const app = express();
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "user_broswer/uploads/");
+        },
+        filename: function (req, file, cb) {
+            cb(null, file.originalname);
+        }
+
+    });
+    const upload = multer({storage});
     //port is vite default port 5173
     const PORT = 5173;
     app.use(express.static('user_broswer'));
+    app.use("/upload_page", express.static("upload_page"));
+    app.post("/upload", upload.array("files"), (req, res) => {
+        console.log("Received files:", req.files);
+        res.send("Files uploaded successfully.");
+    });
     app.listen(PORT, () => console.log(`user sever on port: ${PORT}`));
 }
 

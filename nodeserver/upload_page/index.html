@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>ESP FRIMWARE UPLOAD</title>
+  
+  <script type="module" crossorigin src="index-61bc310c.js"></script>
+  <link rel="stylesheet" href="index-4f3a6d31.css">
+</head>
+
+<body>
+  <form id="fileForm" action="http://192.168.3.19:5173/upload/" method="post" enctype="multipart/form-data">
+    <input type="file" name="files" style="display: none">
+  </form>
+
+  <h1>ESP FRIMWARE UPLOAD</h1>
+  <h3>Test version</h3>
+
+  <div id="drop_zone" ondrop="handleFileSelect(event)" ondragover="handleDragOver(event)">Drop files here</div>
+  
+  <div id="fileInfo">
+    <p id="fileName"></p>
+    <p id="fileType"></p>
+    <p id="fileSize"></p>
+    <p id="fileLastModified"></p>
+  </div>
+
+  <button type="button" onclick="submitForm()">Upload</button>
+
+  
+  
+</body>
+
+</html>
