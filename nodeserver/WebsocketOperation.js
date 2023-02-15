@@ -45,6 +45,9 @@ function listen(table, sendserialmsg) {
             if(message.toString() === "[C]You are connected with broswer(test)"){
                 sendwsmsg(status);
                 console.log("Refresh Status:" + status);
+            }if(message.toString() === "[C]You are connected with broswer"){
+                sendwsmsg(status);
+                console.log("Refresh Status:" + status);
             }
 
             //连接信息显示
