@@ -68,6 +68,15 @@ h1 {
   padding: 2rem;
   text-align: center;
   color: #ffffff;
+  z-index: 1;
+}
+
+#drop_zone {
+  border: 2px dotted #bbb;
+  border-radius: 50px;
+  width: 200px;
+  height: 100px;
+  text-align: center;
 }
 
 .logo {
@@ -100,6 +109,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  z-index: 1;
 }
 button:hover {
   border-color: #646cff;

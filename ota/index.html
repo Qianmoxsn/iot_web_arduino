@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <title>ESP FRIMWARE UPLOAD</title>
   <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" src="main.js"></script>
 </head>
 
 <body>
@@ -23,11 +24,13 @@
     <p id="fileSize"></p>
     <p id="fileLastModified"></p>
   </div>
-
-  <button type="button" onclick="submitForm()">Upload</button>
+  <div id="temp" style="visibility: hidden;">
+    <button type="button" onclick="submitForm()">Upload</button>
+  </div>
+  
 
   
-  <script type="text/javascript" src="main.js"></script>
+  
 </body>
 
 </html>

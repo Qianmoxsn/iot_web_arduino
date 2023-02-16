@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="style.css" />
+    
     <title>Vite App</title>
   </head>
   <body>
@@ -18,8 +19,25 @@
         <p>湿度</p>
         <h3 id="hum">Waiting...</h3>
       </div>
+      <div id="display">
+        <form id="fileForm" action="http://192.168.3.19:5173/upload/" method="post" enctype="multipart/form-data">
+          <input type="file" name="files" style="display: none">
+        </form>
+        <h3>ESP FRIMWARE UPLOAD</h3>
+        <div id="drop_zone" ondrop="handleFileSelect(event)" ondragover="handleDragOver(event)">Drop files here</div>
+        
+        <div id="fileInfo">
+          <p id="fileName"></p>
+          <p id="fileType"></p>
+          <p id="fileSize"></p>
+          <p id="fileLastModified"></p>
+        </div>
+        <div id="temp" style="visibility: hidden;">
+          <button type="button" onclick="submitForm()">Upload</button>
+        </div>
+      </div>
     </div>
-
     <script type="module" src="/webgpu.ts"></script>
+    <script type="text/javascript" src="ota.js"></script>
   </body>
 </html>
