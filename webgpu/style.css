@@ -55,6 +55,15 @@ h1 {
   color: #66a795;
 }
 
+#display1 {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  z-index: 1;
+  color: #66a795;
+}
+
 #ap {
   max-width: 1280px;
   margin: 0 auto;

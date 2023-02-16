@@ -19,7 +19,7 @@
         <p>湿度</p>
         <h3 id="hum">Waiting...</h3>
       </div>
-      <div id="display">
+      <div id="display1">
         <form id="fileForm" action="http://192.168.3.19:5173/upload/" method="post" enctype="multipart/form-data">
           <input type="file" name="files" style="display: none">
         </form>
@@ -32,9 +32,9 @@
           <p id="fileSize"></p>
           <p id="fileLastModified"></p>
         </div>
-        <div id="temp" style="visibility: hidden;">
-          <button type="button" onclick="submitForm()">Upload</button>
-        </div>
+        <div id="temp">
+        <button type="button" onclick="submitForm()">Upload</button>
+      </div>
       </div>
     </div>
     <script type="module" src="/webgpu.ts"></script>

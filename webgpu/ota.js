@@ -33,7 +33,7 @@ function handleFileSelect(evt) {
   document.getElementById("fileSize").innerHTML = "File size: " + file_size_auto;
   document.getElementById("fileLastModified").innerHTML = "Last modified: " + file.lastModifiedDate;
   document.getElementById("fileForm").file = files;
-  document.getElementById("temp").style.visibility = "visible";
+  document.getElementById("drop_zone").style.display="none";
 }
 
 function handleDragOver(evt) {
@@ -46,4 +46,5 @@ function submitForm() {
   var input = document.getElementById("fileForm").elements.files;
   input.files = files;
   document.getElementById("fileForm").submit();
+  document.getElementById("display1").style.visibility = "hidden";
 }
