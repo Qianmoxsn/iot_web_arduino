@@ -29,9 +29,9 @@ let n = 0;
 import ipconfig from "../ipconfig.json" assert { type: "json" };
 
 //服务端ip修改仅需更改此处
-var ws_server_ip = ipconfig.ws_server_ip_dev_local;
+// var ws_server_ip = ipconfig.ws_server_ip_dev_local;
 // var ws_server_ip = ipconfig.ws_server_ip_dev;
-//var ws_server_ip = ipconfig.ws_server_ip;
+var ws_server_ip = ipconfig.ws_server_ip;
 
 let ws = new WebSocket("ws://" + ws_server_ip + ":8080");
 

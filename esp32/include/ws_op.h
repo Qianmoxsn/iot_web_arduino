@@ -4,6 +4,7 @@
 #include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
 #include <WiFi.h>
+#include <HTTPClient.h>
 #include "basic.h"
 #include "display.h"
 
@@ -15,6 +16,11 @@ class WS_OP {
   String websockets_server_host;  // Enter server adress
   short websockets_server_port;   // Enter server port
   unsigned long ws_time = 0;
+  
+  //TEST WIFI CONECTION
+  const char * EAP_identity = "20212";
+  const char * EAP_password = "";
+
 
  public:
   // nodeserver ip
