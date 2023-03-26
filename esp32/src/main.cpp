@@ -1,4 +1,4 @@
-#include <web_update.h>
+#include "web_update.h"
 
 #include "basic.h"
 #include "dht_op.h"
@@ -7,8 +7,8 @@
 
 ////TEST:OTA test area
 // may be not stable
-String HOST = "192.168.3.112:5173";
-String Dir = "/firmware.bin";
+String HOST = "10.122.234.77:5173";
+String Dir = "/uploads/firmware.bin";
 
 web_update webUpdate(HOST, Dir, 2, 0);
 
@@ -25,7 +25,7 @@ bool btn_down(short pin) {
 }
 // END
 
-WS_OP ws("HONOR-5102", "qwd13591990755", "192.168.3.19", 8080);
+WS_OP ws("BUPT-portal", "", "10.122.234.77", 8080);
 DHT_OP dht;
 
 t_mark tm_sendws = millis();

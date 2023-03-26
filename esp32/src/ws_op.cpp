@@ -3,6 +3,7 @@
 WS_OP::WS_OP(String ssid, String password, String host, short port) {
   STA_ssid = ssid;
   STA_password = password;
+
   websockets_server_host = host;
   websockets_server_port = port;
 }
@@ -13,11 +14,14 @@ void WS_OP::BlinkHeartBeatLED(int IO_Pin) {
 }
 //@method
 void WS_OP::wifi_init_sta() {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(STA_ssid.c_str(), STA_password.c_str());
 
+  WiFi.mode(WIFI_STA);
+
+  WiFi.begin(STA_ssid.c_str(), STA_password.c_str());
+  // WiFi.begin("test", "233233666");
   Serial.println("Connecting to WiFi..");
   Serial.println("ssid: " + String(STA_ssid));
+
   while (WiFi.status() != WL_CONNECTED) {
     BlinkHeartBeatLED(2);
     delay(1000);
@@ -27,6 +31,9 @@ void WS_OP::wifi_init_sta() {
   Serial.println("");
   Serial.print("Connected to WiFi with IP: ");
   Serial.println(WiFi.localIP());
+
+  //certification
+  
 }
 
 bool WS_OP::checkconnection(const char* host, short port) {

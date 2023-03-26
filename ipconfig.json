@@ -1,6 +1,6 @@
 {
-  "esp32_local_ip": "192.168.3.10",
-  "ws_server_ip": "192.168.3.19",
-  "ws_server_ip_dev": "192.168.3.112",
+  "esp32_local_ip": "10.122.199.209",
+  "ws_server_ip": "10.122.234.77",
+  "ws_server_ip_dev": "10.122.220.130",
   "ws_server_ip_dev_local": "127.0.0.1"
 }
