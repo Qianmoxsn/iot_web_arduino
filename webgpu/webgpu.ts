@@ -16,6 +16,8 @@ import {
   BoxColliderShape,
   Collider,
   PointerEvent3D,
+  OutlinePost,
+  outlinePostManager,
 } from '@orillusion/core';
 
 async function demo(){
@@ -25,6 +27,10 @@ async function demo(){
   // Bound: 包围盒拾取, pixel: 帧缓冲区拾取
   Engine3D.setting.pick.mode = `bound`; // or 'pixel'
   await Engine3D.init();
+  //Engine3D.setting.render.postProcessing.outline.outlinePixel = 2;
+  //Engine3D.setting.render.postProcessing.outline.fadeOutlinePixel = 4;
+  Engine3D.setting.render.postProcessing.outline.outlinePixel = 0;
+  Engine3D.setting.render.postProcessing.outline.fadeOutlinePixel = 0;
   let scene3D = new Scene3D();
   let cameraObj:Object3D = new Object3D();
   // 加载一个相机组件
@@ -95,6 +101,7 @@ async function demo(){
   let mr4 = scene.addComponent(MeshRenderer);
   // 设置 box geometry
   mr4.geometry = new BoxGeometry(1,1,1);
+  outlinePostManager.setOutlineList([[data]], [new Color(1, 0.2, 0, 1)]);
   // 添加碰撞盒检测
   let collider = scene.addComponent(Collider);
   // bound 模式需要手动设置碰撞盒样式和大小
@@ -133,6 +140,7 @@ async function demo(){
 
   // 新建前向渲染业务
   let renderJob = new ForwardRenderJob(scene3D);
+  renderJob.addPost(new OutlinePost());
   // 开始渲染
   Engine3D.startRender(renderJob);
 
