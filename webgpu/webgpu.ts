@@ -19,6 +19,17 @@ import {
   OutlinePost,
   outlinePostManager,
 } from '@orillusion/core';
+let n=0;
+
+import ipconfig from "../ipconfig.json" assert { type: "json" };
+  
+  //服务端ip修改仅需更改此处
+  var ws_server_ip = ipconfig.ws_server_ip_dev_local;
+  // var ws_server_ip = ipconfig.ws_server_ip_dev;
+  //var ws_server_ip = ipconfig.ws_server_ip;
+  
+  let ws = new WebSocket("ws://" + ws_server_ip + ":8080");
+
 
 async function demo(){
   console.log("start demo");
@@ -31,6 +42,31 @@ async function demo(){
   //Engine3D.setting.render.postProcessing.outline.fadeOutlinePixel = 4;
   Engine3D.setting.render.postProcessing.outline.outlinePixel = 0;
   Engine3D.setting.render.postProcessing.outline.fadeOutlinePixel = 0;
+  
+  let ws = new WebSocket("ws://" + ws_server_ip + ":8080");
+    ws.onopen = function () {
+      ws.send("[C]You are connected with broswer");
+    };
+    ws.onmessage = function (evt) {
+      console.log(evt.data);
+      if (evt.data.slice(1, 2) === "T") {
+        let temp = evt.data.slice(3, 7);
+        document.getElementById("temp").innerHTML = temp;
+        let hum = evt.data.slice(8, 10);
+        document.getElementById("hum").innerHTML = hum;
+      } else if (evt.data.slice(1, 2) === "L" || evt.data.slice(1, 2) === "W") {
+        if (evt.data.slice(3, 7) == "5678") {
+          Engine3D.setting.render.postProcessing.outline.outlinePixel = 2;
+          Engine3D.setting.render.postProcessing.outline.fadeOutlinePixel = 4;
+          n=1;
+        } else if (evt.data.slice(3, 7) == "1234") {
+          Engine3D.setting.render.postProcessing.outline.outlinePixel = 0;
+          Engine3D.setting.render.postProcessing.outline.fadeOutlinePixel = 0;
+          n=0;
+        }
+      }
+    };
+
   let scene3D = new Scene3D();
   let cameraObj:Object3D = new Object3D();
   // 加载一个相机组件
@@ -103,7 +139,7 @@ async function demo(){
   mr4.geometry = new BoxGeometry(1,1,1);
   outlinePostManager.setOutlineList([[data]], [new Color(1, 0.2, 0, 1)]);
   // 添加碰撞盒检测
-  let collider = scene.addComponent(Collider);
+  let collider = data.addComponent(Collider);
   // bound 模式需要手动设置碰撞盒样式和大小
   // 拾取精度取决于 box.geometry 和 collider.shape 的匹配程度
   collider.shape = new BoxColliderShape().setFromCenterAndSize(new Vector3(0, 0, 0), new Vector3(2, 1, 1));
@@ -135,17 +171,34 @@ async function demo(){
   data4.transform.localRotation = new Vector3(0, -90, 0);
   // 添加至场景
   scene3D.addChild(data4);
-
   
-
   // 新建前向渲染业务
   let renderJob = new ForwardRenderJob(scene3D);
   renderJob.addPost(new OutlinePost());
   // 开始渲染
   Engine3D.startRender(renderJob);
 
+  // 统一监听点击事件
+  Engine3D.pickFire.addEventListener(PointerEvent3D.PICK_CLICK, onPick, this);
+
+
 }
 
-
+function onPick(e: PointerEvent3D) {
+  console.log("onClick:", e);
+  if (n % 2 == 0) {
+    ws.send("5678");
+    console.log("5678");
+    Engine3D.setting.render.postProcessing.outline.outlinePixel = 2;
+    Engine3D.setting.render.postProcessing.outline.fadeOutlinePixel = 4;
+    n=1;
+  } else {
+    ws.send("1234");
+    console.log("1234");
+    Engine3D.setting.render.postProcessing.outline.outlinePixel = 0;
+    Engine3D.setting.render.postProcessing.outline.fadeOutlinePixel = 0;
+    n=0;
+  }
+}
 
 demo()
