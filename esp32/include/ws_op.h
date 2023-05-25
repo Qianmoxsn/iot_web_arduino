@@ -13,14 +13,16 @@ class WS_OP {
  private:
   String STA_ssid;
   String STA_password;
+  
+  //authentication url
+  const char* server = "10.3.8.216";
+  const int server_port = 80;
+  const String login_path = "/login";
+
   String websockets_server_host;  // Enter server adress
   short websockets_server_port;   // Enter server port
   unsigned long ws_time = 0;
   
-  //TEST WIFI CONECTION
-  const char * EAP_identity = "20212";
-  const char * EAP_password = "";
-
 
  public:
   // nodeserver ip

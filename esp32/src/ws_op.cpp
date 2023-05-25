@@ -33,7 +33,43 @@ void WS_OP::wifi_init_sta() {
   Serial.println(WiFi.localIP());
 
   //certification
-  
+  // 设置请求头
+  HTTPClient http;
+  http.begin("http://" + String(server) + ":" + String(server_port) + login_path);
+  http.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+  http.addHeader("Accept-Encoding", "gzip, deflate");
+  http.addHeader("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6");
+  http.addHeader("Cache-Control", "max-age=0");
+  http.addHeader("Connection", "keep-alive");
+  http.addHeader("Content-Length", "29");
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  http.addHeader("Cookie", "SessionId=b289698c8d723865");
+  http.addHeader("Host", server);
+  http.addHeader("Origin", "http://" + String(server));
+  http.addHeader("Referer", "http://" + String(server) + "/index");
+  http.addHeader("Upgrade-Insecure-Requests", "1");
+  http.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.50");
+
+  // 设置请求数据
+  String data = "user=2021213064&pass=Bupt2833";
+
+  // 发送POST请求
+  int httpCode = http.POST(data);
+
+  // 输出响应结果
+  if (httpCode > 0) {
+    String response = http.getString();
+    Serial.println(response);
+  } else {
+    Serial.println("Error on HTTP request");
+  }
+
+  // Check response content
+  String response_content = http.getString();
+  Serial.println("Response content: ");
+  Serial.println(response_content);
+
+  http.end();
 }
 
 bool WS_OP::checkconnection(const char* host, short port) {
