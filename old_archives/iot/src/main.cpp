@@ -17,10 +17,15 @@
 // dhttype defination
 #define DHTTYPE DHT11
 
+#define NET 1
+
 unsigned long buttontime = 0;
 unsigned long dhttime = 0;
 unsigned long lcdtime = 0;
 unsigned long gprstime = 0;
+unsigned long tcpholdtime = 0;
+
+int tcpholdflag = 0;
 int readtime = -1;
 int lastdata = 0;
 
@@ -108,7 +113,7 @@ void setup() {
   dht.begin();
   delay(5000);
   // lcd.clear();
-
+#ifdef NET
   if (!gprsInit()) {
     Serial.println("GPRS Initialization failed.");
     while (1);
@@ -120,7 +125,11 @@ void setup() {
   String identify = gprs.getIdentify(); // 获取模块标识
   Serial.print("Identify: ");
   Serial.println(identify);
+#endif
 }
+
+float zigbee_t = 10.0;
+float zigbee_h = 10.0;
 
 void loop() {
   // Persudo Global Variables
@@ -129,27 +138,32 @@ void loop() {
 
   // ############################
   Serial.println("======Start Loop======");
+#ifdef NET
+  if (tcpholdflag == 0) {
+    // TCP连接
+    Serial.println("Connecting to TCP...");
+    int connectionStatus = gprs.connectTCP("82.157.254.205", 28801); // 替换为您的服务器IP和端口
+    if (connectionStatus == 0) {
+      Serial.println("TCP Connection Successful");
 
-  // TCP连接
-  Serial.println("Connecting to TCP...");
-  int connectionStatus = gprs.connectTCP("82.157.254.205", 28801); // 替换为您的服务器IP和端口
-  if (connectionStatus == 0) {
-    Serial.println("TCP Connection Successful");
-
-    // 登录到平台
-    Serial.println("Logging in to platform...");
-    int loginStatus = gprs.sendTCPData("nnkoWqflwH&13w9okpnh5pv966i"); // 替换为登录认证信息
-    if (loginStatus == 0) {
-      Serial.println("Login to platform successful");
+      // 登录到平台
+      Serial.println("Logging in to platform...");
+      int loginStatus = gprs.sendTCPData("nnkoWqflwH&13w9okpnh5pv966i"); // 替换为登录认证信息
+      if (loginStatus == 0) {
+        Serial.println("Login to platform successful");
+      }
+      else {
+        Serial.println("Login to platform failed");
+      }
+      tcpholdtime = millis();
+      tcpholdflag = 1;
     }
     else {
-      Serial.println("Login to platform failed");
+      Serial.println("TCP Connection Failed");
+      return;
     }
   }
-  else {
-    Serial.println("TCP Connection Failed");
-    return;
-  }
+#endif
 
   //// TIMER 1 --- 1s --- DHT11 read
   if (millis() - dhttime > 1000) {
@@ -169,8 +183,8 @@ void loop() {
     lcdtime = millis();
   }
   //// TIMER 3 --- 1s --- GPRS send json
-  // 构造JSON格式的数据
-  if (millis() - gprstime > 20000) {
+  // 构造JSON格式的数据 + 上传
+  if (millis() - gprstime > 2000) {
 
     String jsonData = "{";
     jsonData += "\"temperature\":";
@@ -178,10 +192,17 @@ void loop() {
     jsonData += ",";
     jsonData += "\"humidity\":";
     jsonData += h; // 添加湿度数据
+    jsonData += ",";
+    jsonData += "\"zigbee_t\":";
+    jsonData += zigbee_t; // 添加温度数据
+    jsonData += ",";
+    jsonData += "\"zigbee_h\":";
+    jsonData += zigbee_h; // 添加湿度数据
     jsonData += "}";
 
     Serial.println("[G]Sending JSON data: " + jsonData);
 
+#ifdef NET
     // 发送JSON数据
     if (gprs.sendTCPData((char*)jsonData.c_str()) == 0) {
       Serial.println("[G]JSON data sent successfully");
@@ -189,19 +210,13 @@ void loop() {
     else {
       Serial.println("[G]Failed to send JSON data");
     }
-
+#endif
     gprstime = millis();
   }
 
 
-  //"AC ON" : "5678" : 0,
-  //"AC OFF" : "1234" : 1,
-  int key2operation[2] = { 5678, 1234 };
-
-
-
-  // if (Serial.available() > 0)  // 判读是否串口有数据
-  // {
+#ifdef NET
+  //// SYNC1 ---recv from GPRS
   if (gprs.serialSIM800.available()) {
     inComing = 1;
     gprs.readBuffer(gprsBuffer, 32, DEFAULT_TIMEOUT);
@@ -221,49 +236,77 @@ void loop() {
     payload.replace("\r\n", "");
 
 
-    Serial.print("[>>]");
+    Serial.print("[GPRS>>]");
     Serial.print(payload);
     Serial.println();
+
+    //TODO: toogleled when payload = "\09"
+    if (payload = 9) {
+      digitalWrite(PIN_LED, !(digitalRead(PIN_LED)));
+    }
+
 
     // empty buffer
     for (size_t i = 0; i < 64; i++) {
       gprsBuffer[i] = 0;
     }
-
     inComing = 0;
   }
-  // String comdata = "";            // 缓存清零
-  // while (Serial.available() > 0)  // 循环串口是否有数据
-  // {
-  //   comdata += char(Serial.read());  // 叠加数据到comdata
-  //   delay(2);                        // 延时等待响应
-  // }
-  // if (comdata.length() > 0)  // 如果comdata有数据
-  // {
-  //   comdata.replace("\r\n", "");  // 去掉回车符
-  //   // lcd.setCursor(0, 1);  // 设置光标位置
-  //   comdata.replace("\r", "");
-  //   comdata.replace("\n", "");
-  //   comdata.replace("[W]", "");
-  //   Serial.print("[>>]");  // 打印comdata数据
-  //   Serial.println(comdata);  // 打印comdata数据
-    // if (comdata == (String)key2operation[0]) {
-    //   // lcd.print("[W]AC ON");  // 打印comdata数据
-    //   digitalWrite(PIN_LED, HIGH);
-    // }
-    // else if (comdata == (String)key2operation[1]) {
-    //   // lcd.print("[W]AC OFF");  // 打印comdata数据
-    //   digitalWrite(PIN_LED, LOW);
-    // }
-    // else {
-    //   // lcd.print("[err]"+comdata);  // 打印comdata数据
-    // }
-    // lcdtime = millis();
-//   }
-// }
+#endif
 
-// 断开TCP连接
-  delay(5000);
-  gprs.closeTCP();
-  Serial.println("TCP Connection Closed");
+  //// SYNC2 --RECV from Zigbee
+  String comdata = "";            // 缓存清零
+  while (Serial.available() > 0)  // 循环串口是否有数据
+  {
+    comdata += char(Serial.read());  // 叠加数据到comdata
+    delay(2);                        // 延时等待响应
+  }
+  if (comdata.length() > 0)  // 如果comdata有数据
+  {
+    comdata.replace("\r\n", "");  // 去掉回车符
+    comdata.replace("\r", "");
+    comdata.replace("\n", "");
+
+    Serial.print("[ZigB>>]");  // 打印comdata数据
+    Serial.println(comdata);  // 打印comdata数据
+
+    // 查找温度起始位置
+    int tempStart = comdata.indexOf("Temp->") + 6; // "Temp->" 长度为 6
+    int tempEnd = comdata.indexOf("Illu->");      // 找到光照强度的起始位置
+
+    // 提取温度数据并转换为浮点数
+    if (tempStart >= 0 && tempEnd > tempStart) {
+      String tempStr = comdata.substring(tempStart, tempEnd);
+      zigbee_t = tempStr.toFloat(); // 转换为浮点数
+    }
+
+    // 查找光照强度起始位置
+    int illuStart = comdata.indexOf("Illu->") + 6; // "Illu->" 长度为 6
+    int illuEnd = comdata.indexOf("\r\n");         // 找到数据结束符
+
+    // 提取光照强度数据并转换为浮点数
+    if (illuStart >= 0 && illuEnd > illuStart) {
+      String illuStr = comdata.substring(illuStart, illuEnd);
+      zigbee_h = illuStr.toFloat(); // 转换为浮点数
+    }
+
+    zigbee_t += 5.0;
+
+    Serial.print("[ZigB>>]T");  // 打印温度和光照强度数据
+    Serial.print(zigbee_t);
+    Serial.print("H");
+    Serial.print(zigbee_h);
+    Serial.println();
+  }
+
+#ifdef NET
+  //// TIMER 4 --- 25s -- TCP keep live
+  if (millis() - tcpholdtime > 25000) {
+    // 断开TCP连接
+    // delay(5000);
+    gprs.closeTCP();
+    Serial.println("TCP Connection Closed");
+    tcpholdflag = 0;
+  }
+#endif
 }
